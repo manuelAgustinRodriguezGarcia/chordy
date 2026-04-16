@@ -1,0 +1,12 @@
+{
+  "name": "chordy",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build:css": "sass scss/main.scss css/app.css --no-source-map",
+    "watch:css": "sass scss/main.scss css/app.css --watch --no-source-map"
+  },
+  "devDependencies": {
+    "sass": "^1.86.0"
+  }
+}
