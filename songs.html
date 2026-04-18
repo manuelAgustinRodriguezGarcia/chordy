@@ -39,17 +39,13 @@
     <div class="bottom-shell">
       <div id="fab-backdrop" class="fab-backdrop" aria-hidden="true"></div>
       <nav class="bottom-nav" aria-label="Secciones">
-        <a class="bottom-nav__link" href="index.html" data-nav="home">
-          <i data-lucide="home"></i>
-          Inicio
-        </a>
         <a class="bottom-nav__link" href="songs.html" data-nav="songs">
           <i data-lucide="list-music"></i>
           Canciones
         </a>
         <div class="bottom-nav__fab">
           <div id="fab-panel" class="fab-panel" role="menu" aria-label="Acciones rápidas">
-            <button type="button" class="fab-panel__btn" role="menuitem">
+            <button type="button" class="fab-panel__btn js-fab-open-song-modal" role="menuitem">
               <i data-lucide="music-2"></i>
               Nueva canción
             </button>
@@ -73,10 +69,6 @@
           <i data-lucide="audio-waveform"></i>
           Acordes
         </a>
-        <a class="bottom-nav__link" href="settings.html" data-nav="settings">
-          <i data-lucide="settings"></i>
-          Ajustes
-        </a>
       </nav>
     </div>
 
@@ -87,6 +79,8 @@
     <script src="js/chords-storage.js"></script>
     <script src="js/chord-diagram.js"></script>
     <script src="js/chord-modal.js"></script>
+    <script src="js/songs-storage.js"></script>
+    <script src="js/song-modal.js"></script>
     <script src="js/songs.js"></script>
   </body>
 </html>

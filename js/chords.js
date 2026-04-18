@@ -98,29 +98,26 @@ function buildChordCards() {
     btnEdit.className = "chord-card__action chord-card__action--edit";
     btnEdit.setAttribute("aria-label", "Editar " + c.name);
     btnEdit.innerHTML = '<i data-lucide="pencil"></i>';
-    btnEdit.setAttribute("data-idx", String(storageIndex));
-    btnEdit.addEventListener("click", function (ev) {
-      ev.stopPropagation();
-      var idx = parseInt(ev.currentTarget.getAttribute("data-idx"), 10);
-      var ch = loadChords()[idx];
-      if (ch && typeof chordModalOpenForEdit === "function") {
-        chordModalOpenForEdit(idx, ch);
-      }
-    });
+    btnEdit.addEventListener("click", (function (idx, chord) {
+      return function (ev) {
+        ev.stopPropagation();
+        if (typeof chordModalOpenForEdit === "function") {
+          chordModalOpenForEdit(idx, chord);
+        }
+      };
+    })(storageIndex, c));
 
     var btnDel = document.createElement("button");
     btnDel.type = "button";
     btnDel.className = "chord-card__action chord-card__action--delete";
     btnDel.setAttribute("aria-label", "Eliminar " + c.name);
     btnDel.innerHTML = '<i data-lucide="trash-2"></i>';
-    btnDel.addEventListener("click", function (ev) {
-      ev.stopPropagation();
-      var idx = parseInt(ev.currentTarget.getAttribute("data-idx"), 10);
-      var nm = ev.currentTarget.getAttribute("data-name") || "";
-      chordDeleteModalOpen(nm, idx);
-    });
-    btnDel.setAttribute("data-idx", String(storageIndex));
-    btnDel.setAttribute("data-name", c.name);
+    btnDel.addEventListener("click", (function (idx, name) {
+      return function (ev) {
+        ev.stopPropagation();
+        chordDeleteModalOpen(name, idx);
+      };
+    })(storageIndex, c.name));
 
     toolbar.appendChild(btnEdit);
     toolbar.appendChild(btnDel);

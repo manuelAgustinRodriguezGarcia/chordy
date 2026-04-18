@@ -171,13 +171,10 @@ function chordModalEscapeKey(event) {
 }
 
 function chordModalUpdatePreview() {
-  if (!chordModalPreview) {
-    return;
-  }
-  var keepNameFocus =
-    chordModalNameInput && document.activeElement === chordModalNameInput;
-  var selA = keepNameFocus ? chordModalNameInput.selectionStart : null;
-  var selB = keepNameFocus ? chordModalNameInput.selectionEnd : null;
+  if (!chordModalPreview) return;
+  var hasFocus = chordModalNameInput && document.activeElement === chordModalNameInput;
+  var selStart = hasFocus ? chordModalNameInput.selectionStart : null;
+  var selEnd = hasFocus ? chordModalNameInput.selectionEnd : null;
   renderChordDiagram(chordModalPreview, {
     nameTitleSlot: chordModalNameInput,
     strings: chordModalStrings.slice(),
@@ -187,17 +184,10 @@ function chordModalUpdatePreview() {
   chordModalBuildInlineModes();
   chordModalSyncModes();
   chordModalBuildPreviewTargets();
-  if (keepNameFocus && chordModalNameInput) {
+  if (hasFocus && chordModalNameInput) {
     chordModalNameInput.focus();
-    if (
-      typeof selA === "number" &&
-      typeof selB === "number" &&
-      !isNaN(selA) &&
-      !isNaN(selB)
-    ) {
-      try {
-        chordModalNameInput.setSelectionRange(selA, selB);
-      } catch (err) {}
+    if (selStart !== null && selEnd !== null) {
+      chordModalNameInput.setSelectionRange(selStart, selEnd);
     }
   }
 }
@@ -217,28 +207,15 @@ function chordModalSave() {
   if (typeof window.refreshChordList === "function") {
     window.refreshChordList();
   }
+  if (typeof window.songModalRefreshPicker === "function") {
+    window.songModalRefreshPicker();
+  }
   if (typeof lucide !== "undefined" && lucide.createIcons) {
     lucide.createIcons();
   }
 }
 
-function chordModalOpen() {
-  if (typeof chordyCloseFabMenu === "function") {
-    chordyCloseFabMenu();
-  }
-  if (!chordModalBuilt) {
-    return;
-  }
-  chordModalEditIndex = null;
-  if (chordModalTitleEl) {
-    chordModalTitleEl.textContent = "Agregar nuevo acorde";
-  }
-  chordModalResetStrings();
-  chordModalStartFret = 1;
-  if (chordModalNameInput) {
-    chordModalNameInput.value = "";
-    chordModalNameInput.focus();
-  }
+function chordModalShow() {
   chordModalUpdatePreview();
   chordModalBackdrop.classList.add("is-open");
   chordModalBackdrop.setAttribute("aria-hidden", "false");
@@ -247,6 +224,18 @@ function chordModalOpen() {
   document.body.classList.add("chord-modal-open");
   chordModalEscapeHandler = chordModalEscapeKey;
   document.addEventListener("keydown", chordModalEscapeHandler, true);
+  if (chordModalNameInput) chordModalNameInput.focus();
+}
+
+function chordModalOpen() {
+  if (typeof chordyCloseFabMenu === "function") chordyCloseFabMenu();
+  if (!chordModalBuilt) return;
+  chordModalEditIndex = null;
+  if (chordModalTitleEl) chordModalTitleEl.textContent = "Agregar nuevo acorde";
+  chordModalResetStrings();
+  chordModalStartFret = 1;
+  if (chordModalNameInput) chordModalNameInput.value = "";
+  chordModalShow();
 }
 
 function chordModalBuildDom() {
@@ -366,47 +355,20 @@ function initChordModal() {
 }
 
 function chordModalOpenForEdit(storageIndex, chord) {
-  if (typeof chordyCloseFabMenu === "function") {
-    chordyCloseFabMenu();
-  }
-  if (!chordModalBuilt || !chord || !chord.strings || chord.strings.length !== 6) {
-    return;
-  }
+  if (typeof chordyCloseFabMenu === "function") chordyCloseFabMenu();
+  if (!chordModalBuilt || !chord || !chord.strings || chord.strings.length !== 6) return;
   chordModalEditIndex = storageIndex;
-  if (chordModalTitleEl) {
-    chordModalTitleEl.textContent = "Editar acorde";
-  }
+  if (chordModalTitleEl) chordModalTitleEl.textContent = "Editar acorde";
   for (var i = 0; i < 6; i++) {
-    chordModalStrings[i] =
-      typeof normalizeStringValue === "function"
-        ? normalizeStringValue(chord.strings[i])
-        : chord.strings[i];
+    chordModalStrings[i] = normalizeStringValue(chord.strings[i]);
   }
-  chordModalStartFret =
-    typeof computeChordDisplayStartFret === "function"
-      ? computeChordDisplayStartFret(chord.strings)
-      : 1;
-  if (chordModalStartFret < 1) {
-    chordModalStartFret = 1;
-  }
-  if (
-    typeof CHORD_DIAGRAM_MAX_START_FRET !== "undefined" &&
-    chordModalStartFret > CHORD_DIAGRAM_MAX_START_FRET
-  ) {
+  chordModalStartFret = computeChordDisplayStartFret(chord.strings);
+  if (chordModalStartFret < 1) chordModalStartFret = 1;
+  if (chordModalStartFret > CHORD_DIAGRAM_MAX_START_FRET) {
     chordModalStartFret = CHORD_DIAGRAM_MAX_START_FRET;
   }
-  if (chordModalNameInput) {
-    chordModalNameInput.value = chord.name || "";
-    chordModalNameInput.focus();
-  }
-  chordModalUpdatePreview();
-  chordModalBackdrop.classList.add("is-open");
-  chordModalBackdrop.setAttribute("aria-hidden", "false");
-  chordModalDialog.classList.add("is-open");
-  chordModalDialog.setAttribute("aria-hidden", "false");
-  document.body.classList.add("chord-modal-open");
-  chordModalEscapeHandler = chordModalEscapeKey;
-  document.addEventListener("keydown", chordModalEscapeHandler, true);
+  if (chordModalNameInput) chordModalNameInput.value = chord.name || "";
+  chordModalShow();
 }
 
 if (document.readyState === "loading") {

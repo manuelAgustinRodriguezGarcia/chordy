@@ -36,8 +36,24 @@ function initFab() {
   });
 }
 
+function initSongFabNav() {
+  var page = document.body.getAttribute("data-page");
+  if (page === "songs") return;
+  var btns = document.querySelectorAll(".js-fab-open-song-modal");
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].addEventListener("click", function () {
+      sessionStorage.setItem("chordyOpenSongModal", "1");
+      window.location.href = "songs.html";
+    });
+  }
+}
+
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initFab);
+  document.addEventListener("DOMContentLoaded", function () {
+    initFab();
+    initSongFabNav();
+  });
 } else {
   initFab();
+  initSongFabNav();
 }
