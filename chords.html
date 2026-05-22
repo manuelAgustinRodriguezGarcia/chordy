@@ -4,18 +4,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#4c1d95" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
     <title>Chordy · Acordes</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="logo-192px.png" type="image/png" />
+    <link rel="apple-touch-icon" href="logo-192px.png" />
     <link rel="stylesheet" href="css/app.css" />
   </head>
   <body data-page="chords">
     <header class="app-header">
-      <div class="app-header__logo" aria-hidden="true">
-        <i data-lucide="guitar"></i>
+      <div class="app-header__brand">
+        <div class="app-header__logo">
+          <img src="logo.png" alt="" class="app-header__logo-img" width="40" height="40" decoding="async" />
+        </div>
+        <div>
+          <div class="app-header__title">Chordy</div>
+          <div class="app-header__subtitle">Catálogo de acordes</div>
+        </div>
       </div>
-      <div>
-        <div class="app-header__title">Chordy</div>
-        <div class="app-header__subtitle">Catálogo de acordes</div>
-      </div>
+      <button type="button" id="pwa-install-btn" class="pwa-install-btn" hidden>Instalar</button>
     </header>
 
     <main class="app-main" id="main">
@@ -91,7 +98,7 @@
       </nav>
     </div>
 
-    <script src="https://unpkg.com/lucide@0.487.0/dist/umd/lucide.min.js"></script>
+    <script src="js/vendor/lucide.min.js"></script>
     <script src="js/icons.js"></script>
     <script src="js/nav.js"></script>
     <script src="js/fab.js"></script>
@@ -99,5 +106,7 @@
     <script src="js/chord-diagram.js"></script>
     <script src="js/chord-modal.js"></script>
     <script src="js/chords.js"></script>
+    <script src="js/pwa-install.js"></script>
+    <script src="js/pwa-register.js"></script>
   </body>
 </html>
