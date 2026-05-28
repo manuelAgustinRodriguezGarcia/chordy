@@ -40,6 +40,21 @@ npm start           # servidor en http://localhost:3000
 
 Abrí [http://localhost:3000/songs.html](http://localhost:3000/songs.html).
 
+### Deploy en Vercel
+
+Chordy es un sitio estático (HTML/CSS/JS) + una función serverless para Spotify. **No uses `npm start` en Vercel** (ese comando es solo para desarrollo local con `server.js`).
+
+1. Conectá el repo en Vercel.
+2. **Framework Preset:** Other  
+   **Build Command:** `npm run build:css`  
+   **Output Directory:** dejalo vacío (raíz del repo).
+3. En **Settings → Environment Variables** agregá:
+   - `SPOTIFY_CLIENT_ID`
+   - `SPOTIFY_CLIENT_SECRET`
+4. Redeploy.
+
+La ruta `/api/spotify/search` la atiende `api/spotify/search.js`. El archivo `vercel.json` redirige `/` → `songs.html`.
+
 Para desarrollo con recarga de estilos:
 
 ```bash

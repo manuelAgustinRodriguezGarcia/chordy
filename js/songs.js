@@ -78,14 +78,6 @@ var viewLearnedBtn = null;
 
 var SLOT_INTERVAL = 3;
 
-function songEscapeHtml(text) {
-  return String(text)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
 function songFormSyncTrash(field) {
   var trash =
     field === "title"
@@ -226,10 +218,8 @@ function songTitleInputHandler() {
 
 function songOnBrowserOffline() {
   songHideTitleDropdown();
-  if (!chordyIsOnline()) {
-    songFormManual.title = true;
-    songFormSyncTrash("title");
-  }
+  songFormManual.title = true;
+  songFormSyncTrash("title");
   songSyncUpdateButtons();
 }
 
@@ -834,7 +824,7 @@ function songArtistDropdownRefresh() {
 }
 
 function songModalOpen() {
-  if (typeof chordyCloseFabMenu === "function") chordyCloseFabMenu();
+  chordyCloseFabMenu();
   if (!songModalReady) return;
   songTitleInput.value = "";
   songAlbumInput.value = "";
@@ -1061,7 +1051,7 @@ function songModalSave() {
     addSong(song);
   }
   songModalClose();
-  if (typeof buildSongLists === "function") buildSongLists();
+  buildSongLists();
 }
 
 function buildPickerDom() {
@@ -1088,7 +1078,7 @@ function buildPickerDom() {
   newChordBtn.className = "song-picker__add";
   newChordBtn.textContent = "+";
   newChordBtn.addEventListener("click", function () {
-    if (typeof chordModalOpen === "function") chordModalOpen();
+    chordModalOpen();
   });
   searchRow.appendChild(newChordBtn);
   pickerEl.appendChild(searchRow);
@@ -1387,7 +1377,7 @@ function songModalOpenView(index) {
   var songs = loadSongs();
   if (index < 0 || index >= songs.length) return;
   if (!songModalReady) return;
-  if (typeof chordyCloseFabMenu === "function") chordyCloseFabMenu();
+  chordyCloseFabMenu();
 
   var song = songs[index];
   songEditIndex = index;
@@ -1465,11 +1455,7 @@ function initSongModal() {
   }
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initSongModal);
-} else {
-  initSongModal();
-}
+chordyOnReady(initSongModal);
 
 
 var currentSortMode = "az";
@@ -1570,10 +1556,7 @@ function buildSongCard(storageIndex, song) {
   var line2 = songCardEscape(song.artist || "");
   var syncBtn = "";
   if (song.pendingSync) {
-    var syncIcon =
-      typeof chordyIcon === "function"
-        ? chordyIcon("arrow-repeat", "card__sync-btn__icon")
-        : '<i class="bi bi-arrow-repeat card__sync-btn__icon" aria-hidden="true"></i>';
+    var syncIcon = chordyIcon("arrow-repeat", "card__sync-btn__icon");
     syncBtn =
       '<button type="button" class="card__sync-btn js-song-sync" data-song-idx="' +
       storageIndex +
@@ -1691,7 +1674,7 @@ function onSongCardClick(e) {
   if (e.target.closest(".js-song-sync")) return;
   var idx = parseInt(e.currentTarget.getAttribute("data-song-idx"), 10);
   if (isNaN(idx)) return;
-  if (typeof songModalOpenView === "function") songModalOpenView(idx);
+  songModalOpenView(idx);
 }
 
 function initSongsPage() {
@@ -1703,8 +1686,4 @@ function startSongsPage() {
   chordyStorageReady.then(initSongsPage);
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", startSongsPage);
-} else {
-  startSongsPage();
-}
+chordyOnReady(startSongsPage);

@@ -1,11 +1,10 @@
 (function () {
   var STORAGE_KEY = "chordy_theme";
-  var VALID_THEMES = { light: true, dark: true };
 
   function getStoredTheme() {
     try {
       var stored = localStorage.getItem(STORAGE_KEY);
-      if (stored && VALID_THEMES[stored]) {
+      if (stored === "dark" || stored === "light") {
         return stored;
       }
     } catch (err) {}
@@ -26,10 +25,7 @@
   function refreshThemeIcon(btn, theme) {
     if (!btn) return;
     var iconName = theme === "dark" ? "moon" : "sun";
-    btn.innerHTML =
-      typeof chordyIcon === "function"
-        ? chordyIcon(iconName, "theme-toggle__icon")
-        : "";
+    btn.innerHTML = chordyIcon(iconName, "theme-toggle__icon");
   }
 
   function updateToggleButton(btn, theme) {
@@ -40,7 +36,7 @@
   }
 
   function setTheme(theme) {
-    if (!VALID_THEMES[theme]) return;
+    if (theme !== "light" && theme !== "dark") return;
     try {
       localStorage.setItem(STORAGE_KEY, theme);
     } catch (err) {}
@@ -74,10 +70,7 @@
     btn.classList.toggle("is-offline", !online);
     btn.classList.toggle("is-online", online);
     var iconName = online ? "wifi" : "wifi-off";
-    btn.innerHTML =
-      typeof chordyIcon === "function"
-        ? chordyIcon(iconName, "theme-toggle__icon")
-        : "";
+    btn.innerHTML = chordyIcon(iconName, "theme-toggle__icon");
   }
 
   function initConnectionStatus() {
@@ -106,9 +99,5 @@
     initConnectionStatus();
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", init);
-  } else {
-    init();
-  }
+  chordyOnReady(init);
 })();

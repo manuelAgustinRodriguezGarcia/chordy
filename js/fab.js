@@ -48,12 +48,7 @@ function initSongFabNav() {
   }
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", function () {
-    initFab();
-    initSongFabNav();
-  });
-} else {
+chordyOnReady(function () {
   initFab();
   initSongFabNav();
-}
+});

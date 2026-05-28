@@ -377,16 +377,7 @@ function chordModalBuildInlineModes() {
 }
 
 function chordModalSetString(index, value) {
-  if (index < 0 || index > 5) {
-    return;
-  }
-  if (
-    value !== "none" &&
-    value !== "air" &&
-    (typeof value !== "number" || value < 1 || value > CHORD_DIAGRAM_MAX_ABSOLUTE_FRET)
-  ) {
-    return;
-  }
+  if (index < 0 || index > 5) return;
   chordModalStrings[index] = value;
   chordModalUpdatePreview();
 }
@@ -451,16 +442,14 @@ function chordModalSave() {
     return;
   }
   var payload = { name: name, strings: chordModalStrings.slice() };
-  if (chordModalEditIndex !== null && typeof updateChordAt === "function") {
+  if (chordModalEditIndex !== null) {
     updateChordAt(chordModalEditIndex, payload);
   } else {
     addChord(payload);
   }
   chordModalClose();
-  if (typeof window.refreshChordList === "function") {
-    window.refreshChordList();
-  }
-  if (typeof window.songModalRefreshPicker === "function") {
+  window.refreshChordList();
+  if (window.songModalRefreshPicker) {
     window.songModalRefreshPicker();
   }
 }
@@ -478,7 +467,7 @@ function chordModalShow() {
 }
 
 function chordModalOpen() {
-  if (typeof chordyCloseFabMenu === "function") chordyCloseFabMenu();
+  chordyCloseFabMenu();
   if (!chordModalBuilt) return;
   chordModalEditIndex = null;
   if (chordModalTitleEl) chordModalTitleEl.textContent = "Agregar nuevo acorde";
@@ -595,17 +584,17 @@ function initChordModal() {
   }
   if (
     document.body.getAttribute("data-page") === "chords" &&
-    (sessionStorage.getItem("chordyOpenChordModal") ||
-      sessionStorage.getItem("acordyOpenChordModal"))
+    sessionStorage.getItem("chordyOpenChordModal")
   ) {
     sessionStorage.removeItem("chordyOpenChordModal");
-    sessionStorage.removeItem("acordyOpenChordModal");
     chordModalOpen();
   }
 }
 
+chordyOnReady(initChordModal);
+
 function chordModalOpenForEdit(storageIndex, chord) {
-  if (typeof chordyCloseFabMenu === "function") chordyCloseFabMenu();
+  chordyCloseFabMenu();
   if (!chordModalBuilt || !chord || !chord.strings || chord.strings.length !== 6) return;
   chordModalEditIndex = storageIndex;
   if (chordModalTitleEl) chordModalTitleEl.textContent = "Editar acorde";
@@ -621,15 +610,16 @@ function chordModalOpenForEdit(storageIndex, chord) {
   chordModalShow();
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initChordModal);
-} else {
-  initChordModal();
-}
-
-
 function chordSearchNormalize(s) {
   return (s || "").toLowerCase().trim();
+}
+
+function chordCompareNames(a, b) {
+  var ta = String(a).toLowerCase();
+  var tb = String(b).toLowerCase();
+  if (ta < tb) return -1;
+  if (ta > tb) return 1;
+  return 0;
 }
 
 function chordListPrepareDecorated() {
@@ -639,7 +629,7 @@ function chordListPrepareDecorated() {
     decorated.push({ chord: raw[i], storageIndex: i });
   }
   decorated.sort(function (a, b) {
-    return a.chord.name.localeCompare(b.chord.name, "es", { sensitivity: "base" });
+    return chordCompareNames(a.chord.name, b.chord.name);
   });
   return decorated;
 }
@@ -724,13 +714,11 @@ function buildChordCards() {
     btnEdit.type = "button";
     btnEdit.className = "chord-card__action chord-card__action--edit";
     btnEdit.setAttribute("aria-label", "Editar " + c.name);
-    btnEdit.innerHTML = typeof chordyIcon === "function" ? chordyIcon("pencil") : "";
+    btnEdit.innerHTML = chordyIcon("pencil");
     btnEdit.addEventListener("click", (function (idx, chord) {
       return function (ev) {
         ev.stopPropagation();
-        if (typeof chordModalOpenForEdit === "function") {
-          chordModalOpenForEdit(idx, chord);
-        }
+        chordModalOpenForEdit(idx, chord);
       };
     })(storageIndex, c));
 
@@ -738,7 +726,7 @@ function buildChordCards() {
     btnDel.type = "button";
     btnDel.className = "chord-card__action chord-card__action--delete";
     btnDel.setAttribute("aria-label", "Eliminar " + c.name);
-    btnDel.innerHTML = typeof chordyIcon === "function" ? chordyIcon("trash-2") : "";
+    btnDel.innerHTML = chordyIcon("trash-2");
     btnDel.addEventListener("click", (function (idx, name) {
       return function (ev) {
         ev.stopPropagation();
@@ -802,8 +790,4 @@ function startChordsPage() {
   });
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", startChordsPage);
-} else {
-  startChordsPage();
-}
+chordyOnReady(startChordsPage);

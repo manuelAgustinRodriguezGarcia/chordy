@@ -2,10 +2,8 @@ var CHORDY_BI_ICONS = {
   sun: "bi-sun",
   moon: "bi-moon",
   "list-music": "bi-music-note-list",
-  "music-2": "bi-music-note-list",
   guitar: "bi-file-music",
   plus: "bi-plus-lg",
-  "audio-waveform": "bi-file-music",
   "chevron-down": "bi-chevron-down",
   pencil: "bi-pencil",
   "trash-2": "bi-trash",
@@ -20,4 +18,13 @@ function chordyIcon(name, className) {
   return '<i class="' + cls + '" aria-hidden="true"></i>';
 }
 
+function chordyOnReady(fn) {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", fn);
+  } else {
+    fn();
+  }
+}
+
 window.chordyIcon = chordyIcon;
+window.chordyOnReady = chordyOnReady;
