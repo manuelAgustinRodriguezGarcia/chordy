@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node server.js",
+    "dev": "node server.js",
     "build": "npm run build:css",
     "build:css": "sass scss/main.scss css/app.css --no-source-map",
     "watch:css": "sass scss/main.scss css/app.css --watch --no-source-map"

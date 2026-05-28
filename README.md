@@ -35,7 +35,7 @@ Requisitos: [Node.js](https://nodejs.org/) instalado.
 ```bash
 npm install
 npm run build:css   # compila SCSS → css/app.css
-npm start           # servidor en http://localhost:3000
+npm run dev         # servidor en http://localhost:3000
 ```
 
 Abrí [http://localhost:3000/songs.html](http://localhost:3000/songs.html).
