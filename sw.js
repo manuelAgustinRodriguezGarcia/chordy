@@ -1,6 +1,13 @@
 /* Service Worker — Chordy (precache + caché dinámica) */
 
-var PRECACHE_CACHE = "chordy-precache-1";
+var PRECACHE_CACHE = "chordy-precache-8";
+
+var BOOTSTRAP_CDN = [
+  "https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css",
+  "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css",
+  "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/fonts/bootstrap-icons.woff2",
+  "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/fonts/bootstrap-icons.woff",
+];
 var RUNTIME_CACHE = "chordy-runtime-1";
 
 var PRECACHE_URLS = [
@@ -10,19 +17,13 @@ var PRECACHE_URLS = [
   "./chords.html",
   "./new-chord.html",
   "./css/app.css",
-  "./js/vendor/lucide.min.js",
   "./js/icons.js",
   "./js/nav.js",
   "./js/fab.js",
-  "./js/chords-storage.js",
-  "./js/chord-diagram.js",
-  "./js/chord-modal.js",
+  "./js/data/data.js",
   "./js/chords.js",
-  "./js/songs-storage.js",
-  "./js/song-modal.js",
   "./js/songs.js",
-  "./js/pwa-install.js",
-  "./js/pwa-register.js",
+  "./js/pwa.js",
   "./sw.js",
   "./manifest.webmanifest",
   "./logo.png",
@@ -57,7 +58,7 @@ self.addEventListener("install", function (event) {
     caches
       .open(PRECACHE_CACHE)
       .then(function (cache) {
-        return cache.addAll(PRECACHE_URLS);
+        return cache.addAll(PRECACHE_URLS.concat(BOOTSTRAP_CDN));
       })
       .then(function () {
         return self.skipWaiting();

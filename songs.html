@@ -9,6 +9,26 @@
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="icon" href="logo-192px.png" type="image/png" />
     <link rel="apple-touch-icon" href="logo-192px.png" />
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("chordy_theme");
+          document.documentElement.setAttribute("data-theme", t === "dark" ? "dark" : "light");
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      })();
+    </script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
     <link rel="stylesheet" href="css/app.css" />
   </head>
   <body data-page="songs">
@@ -22,42 +42,60 @@
           <div class="app-header__subtitle">Biblioteca de canciones</div>
         </div>
       </div>
-      <button type="button" id="pwa-install-btn" class="pwa-install-btn" hidden>Instalar</button>
+      <div class="app-header__actions">
+        <button type="button" class="theme-toggle" aria-label="Cambiar tema" aria-pressed="false">
+          <i class="bi bi-sun theme-toggle__icon" aria-hidden="true"></i>
+        </button>
+        <button type="button" id="pwa-install-btn" class="pwa-install-btn" hidden>Instalar</button>
+      </div>
     </header>
 
     <main class="app-main" id="main">
       <h1 class="sr-only">Canciones</h1>
-      <div class="tabs" role="tablist" aria-label="Vista de canciones">
-        <button type="button" class="tab is-active" id="tab-az" role="tab" aria-selected="true" aria-controls="panel-az">
-          A · Z
-        </button>
-        <button type="button" class="tab" id="tab-artist" role="tab" aria-selected="false" aria-controls="panel-artist">
-          Por artista
-        </button>
+      <div class="sort-control">
+        <div class="sort-dropdown" id="song-sort">
+          <button
+            type="button"
+            class="sort-dropdown__trigger"
+            id="song-sort-trigger"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+            aria-controls="song-sort-list"
+          >
+            <span class="sort-dropdown__label" id="song-sort-label">A · Z</span>
+            <i class="bi bi-chevron-down sort-dropdown__chevron" aria-hidden="true"></i>
+          </button>
+          <ul class="sort-dropdown__menu" id="song-sort-list" role="listbox" aria-label="Vista de canciones" hidden>
+            <li role="option" class="sort-dropdown__option is-selected" data-value="az" aria-selected="true" tabindex="-1">
+              A · Z
+            </li>
+            <li role="option" class="sort-dropdown__option" data-value="za" aria-selected="false" tabindex="-1">
+              Z · A
+            </li>
+            <li role="option" class="sort-dropdown__option" data-value="artist" aria-selected="false" tabindex="-1">
+              Por artista
+            </li>
+          </ul>
+        </div>
       </div>
-      <div id="panel-az" class="tab-panel" role="tabpanel" aria-labelledby="tab-az">
-        <div id="list-az"></div>
-      </div>
-      <div id="panel-artist" class="tab-panel" role="tabpanel" aria-labelledby="tab-artist" hidden>
-        <div id="list-artist"></div>
-      </div>
+      <div id="list-songs"></div>
     </main>
 
     <div class="bottom-shell">
       <div id="fab-backdrop" class="fab-backdrop" aria-hidden="true"></div>
       <nav class="bottom-nav" aria-label="Secciones">
         <a class="bottom-nav__link" href="songs.html" data-nav="songs">
-          <i data-lucide="list-music"></i>
+          <i class="bi bi-music-note-list" aria-hidden="true"></i>
           Canciones
         </a>
         <div class="bottom-nav__fab">
           <div id="fab-panel" class="fab-panel" role="menu" aria-label="Acciones rápidas">
             <button type="button" class="fab-panel__btn js-fab-open-song-modal" role="menuitem">
-              <i data-lucide="music-2"></i>
+              <i class="bi bi-music-note-list" aria-hidden="true"></i>
               Nueva canción
             </button>
             <button type="button" class="fab-panel__btn js-fab-open-chord-modal" role="menuitem">
-              <i data-lucide="guitar"></i>
+              <i class="bi bi-file-music" aria-hidden="true"></i>
               Nuevo acorde
             </button>
           </div>
@@ -69,27 +107,22 @@
             aria-expanded="false"
             aria-haspopup="menu"
           >
-            <i data-lucide="plus"></i>
+            <i class="bi bi-plus-lg" aria-hidden="true"></i>
           </button>
         </div>
         <a class="bottom-nav__link" href="chords.html" data-nav="chords">
-          <i data-lucide="audio-waveform"></i>
+          <i class="bi bi-file-music" aria-hidden="true"></i>
           Acordes
         </a>
       </nav>
     </div>
 
-    <script src="js/vendor/lucide.min.js"></script>
     <script src="js/icons.js"></script>
     <script src="js/nav.js"></script>
     <script src="js/fab.js"></script>
-    <script src="js/chords-storage.js"></script>
-    <script src="js/chord-diagram.js"></script>
-    <script src="js/chord-modal.js"></script>
-    <script src="js/songs-storage.js"></script>
-    <script src="js/song-modal.js"></script>
+    <script src="js/data/data.js"></script>
+    <script src="js/chords.js"></script>
     <script src="js/songs.js"></script>
-    <script src="js/pwa-install.js"></script>
-    <script src="js/pwa-register.js"></script>
+    <script src="js/pwa.js"></script>
   </body>
 </html>

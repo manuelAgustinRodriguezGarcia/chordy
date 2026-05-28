@@ -1,4 +1,14 @@
 (function () {
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker
+        .register("./sw.js", { scope: "./" })
+        .catch(function (err) {
+          console.warn("[Chordy] No se pudo registrar el Service Worker:", err);
+        });
+    });
+  }
+
   var deferredPrompt = null;
   var installBtn = null;
 
@@ -10,17 +20,13 @@
   }
 
   function setInstallVisible(show) {
-    if (!installBtn) {
-      return;
-    }
+    if (!installBtn) return;
     installBtn.hidden = !show;
   }
 
   function bindInstallButton() {
     installBtn = document.getElementById("pwa-install-btn");
-    if (!installBtn) {
-      return;
-    }
+    if (!installBtn) return;
 
     if (isStandaloneDisplay()) {
       setInstallVisible(false);
@@ -28,9 +34,7 @@
     }
 
     installBtn.addEventListener("click", function () {
-      if (!deferredPrompt) {
-        return;
-      }
+      if (!deferredPrompt) return;
       deferredPrompt.prompt();
       deferredPrompt.userChoice.finally(function () {
         deferredPrompt = null;
