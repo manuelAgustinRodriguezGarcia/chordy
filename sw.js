@@ -1,6 +1,6 @@
 /* Service Worker — Chordy (precache + caché dinámica) */
 
-var PRECACHE_CACHE = "chordy-precache-8";
+var PRECACHE_CACHE = "chordy-precache-9";
 
 var BOOTSTRAP_CDN = [
   "https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css",

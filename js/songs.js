@@ -74,6 +74,7 @@ var viewTitleEl = null;
 var viewAlbumEl = null;
 var viewArtistEl = null;
 var viewLinesEl = null;
+var viewLearnedBtn = null;
 
 var SLOT_INTERVAL = 3;
 
@@ -150,8 +151,18 @@ function songFormApplyTrack(track) {
   if (songArtistDropdown) songArtistDropdown.hidden = true;
 }
 
+function songHideTitleDropdown() {
+  if (songTitleDropdown) {
+    songTitleDropdown.innerHTML = "";
+    songTitleDropdown.hidden = true;
+  }
+}
+
 function songTitleSearchRun() {
-  if (songFormManual.title || !chordyIsOnline()) return;
+  if (songFormManual.title || !chordyIsOnline()) {
+    songHideTitleDropdown();
+    return;
+  }
   var query = songTitleInput.value.trim();
   if (!songTitleDropdown) return;
   songTitleDropdown.innerHTML = "";
@@ -160,7 +171,10 @@ function songTitleSearchRun() {
     return;
   }
   chordySpotifySearch(query).then(function (results) {
-    if (!songTitleDropdown) return;
+    if (!songTitleDropdown || songFormManual.title || !chordyIsOnline()) {
+      songHideTitleDropdown();
+      return;
+    }
     songTitleDropdown.innerHTML = "";
     for (var i = 0; i < results.length; i++) {
       (function (track) {
@@ -180,7 +194,7 @@ function songTitleSearchRun() {
     var useBtn = document.createElement("button");
     useBtn.type = "button";
     useBtn.className = "song-meta-dropdown__own";
-    useBtn.textContent = "Usar texto del input";
+    useBtn.textContent = '"' + query + '"';
     useBtn.addEventListener("mousedown", function (e) {
       e.preventDefault();
     });
@@ -189,7 +203,7 @@ function songTitleSearchRun() {
       songFormManual.album = true;
       songFormManual.artist = true;
       songFormAlbumImage = "";
-      songTitleDropdown.hidden = true;
+      songHideTitleDropdown();
       songFormSyncTrash("title");
       songFormSyncTrash("album");
       songFormSyncTrash("artist");
@@ -202,11 +216,243 @@ function songTitleSearchRun() {
 function songTitleInputHandler() {
   if (songTitleSearchTimer) clearTimeout(songTitleSearchTimer);
   if (songFormManual.title || !chordyIsOnline()) {
-    if (songTitleDropdown) songTitleDropdown.hidden = true;
+    songHideTitleDropdown();
+    songFormSyncTrash("title");
     return;
   }
   songTitleSearchTimer = setTimeout(songTitleSearchRun, 400);
   songFormSyncTrash("title");
+}
+
+function songOnBrowserOffline() {
+  songHideTitleDropdown();
+  if (!chordyIsOnline()) {
+    songFormManual.title = true;
+    songFormSyncTrash("title");
+  }
+  songSyncUpdateButtons();
+}
+
+function songOnBrowserOnline() {
+  songSyncUpdateButtons();
+}
+
+function songCopyChords(chords) {
+  var out = [];
+  for (var i = 0; i < chords.length; i++) {
+    out.push(chords[i] ? chords[i].slice() : []);
+  }
+  return out;
+}
+
+var songSyncBackdrop = null;
+var songSyncEl = null;
+var songSyncPreviewEl = null;
+var songSyncResultsEl = null;
+var songSyncHintEl = null;
+var songSyncSkipBtn = null;
+var songSyncIndex = null;
+
+function songSyncBuildDom() {
+  songSyncBackdrop = document.createElement("div");
+  songSyncBackdrop.className = "song-sync-backdrop";
+  songSyncBackdrop.addEventListener("click", songSyncClose);
+
+  songSyncEl = document.createElement("div");
+  songSyncEl.className = "song-sync-modal";
+  songSyncEl.addEventListener("click", function (e) {
+    e.stopPropagation();
+  });
+
+  var title = document.createElement("h2");
+  title.className = "chord-modal__title";
+  title.textContent = "Sincronizar canción";
+  songSyncEl.appendChild(title);
+
+  songSyncPreviewEl = document.createElement("div");
+  songSyncPreviewEl.className = "song-sync-preview";
+  songSyncEl.appendChild(songSyncPreviewEl);
+
+  songSyncHintEl = document.createElement("p");
+  songSyncHintEl.className = "chord-modal__hint";
+  songSyncHintEl.textContent =
+    "Elegí una coincidencia de Spotify para corregir título, álbum, artista e imagen. La letra y los acordes no se modifican.";
+  songSyncEl.appendChild(songSyncHintEl);
+
+  songSyncResultsEl = document.createElement("div");
+  songSyncResultsEl.className = "song-sync-results";
+  songSyncEl.appendChild(songSyncResultsEl);
+
+  var actions = document.createElement("div");
+  actions.className = "chord-modal__actions song-sync-actions";
+
+  songSyncSkipBtn = document.createElement("button");
+  songSyncSkipBtn.type = "button";
+  songSyncSkipBtn.className = "chord-modal__btn chord-modal__btn--ghost";
+  songSyncSkipBtn.textContent = "Omitir sincronización";
+  songSyncSkipBtn.addEventListener("click", function () {
+    if (songSyncIndex !== null) songSyncSkip(songSyncIndex);
+  });
+  actions.appendChild(songSyncSkipBtn);
+
+  var closeBtn = document.createElement("button");
+  closeBtn.type = "button";
+  closeBtn.className = "chord-modal__btn chord-modal__btn--ghost";
+  closeBtn.textContent = "Cerrar";
+  closeBtn.addEventListener("click", songSyncClose);
+  actions.appendChild(closeBtn);
+
+  songSyncEl.appendChild(actions);
+  document.body.appendChild(songSyncBackdrop);
+  document.body.appendChild(songSyncEl);
+}
+
+function songSyncClose() {
+  if (songSyncBackdrop) songSyncBackdrop.classList.remove("is-open");
+  if (songSyncEl) songSyncEl.classList.remove("is-open");
+  document.body.classList.remove("song-sync-open");
+  songSyncIndex = null;
+}
+
+function songSyncRenderPreview(song) {
+  if (!songSyncPreviewEl || !song) return;
+  songSyncPreviewEl.innerHTML = "";
+  var row = document.createElement("div");
+  row.className = "song-sync-preview__row";
+
+  if (song.albumImage) {
+    var img = document.createElement("img");
+    img.className = "song-sync-preview__cover";
+    img.src = song.albumImage;
+    img.alt = "";
+    row.appendChild(img);
+  } else {
+    var empty = document.createElement("div");
+    empty.className = "song-sync-preview__cover song-sync-preview__cover--empty";
+    row.appendChild(empty);
+  }
+
+  var body = document.createElement("div");
+  body.className = "song-sync-preview__body";
+  var t = document.createElement("p");
+  t.className = "song-sync-preview__title";
+  t.textContent = song.title;
+  var a = document.createElement("p");
+  a.className = "song-sync-preview__meta";
+  a.textContent = (song.album || "—") + " · " + (song.artist || "—");
+  body.appendChild(t);
+  body.appendChild(a);
+  row.appendChild(body);
+  songSyncPreviewEl.appendChild(row);
+}
+
+function songSyncApplyTrack(storageIndex, track) {
+  var songs = loadSongs();
+  var song = songs[storageIndex];
+  if (!song || !track) return;
+  var updated = {
+    title: track.title,
+    album: track.album || song.album,
+    artist: track.artist || song.artist,
+    albumImage: track.image || song.albumImage || "",
+    lines: song.lines.slice(),
+    chords: songCopyChords(song.chords),
+    learned: !!song.learned
+  };
+  updateSongAt(storageIndex, updated);
+  songSyncClose();
+  buildSongLists();
+}
+
+function songSyncSkip(storageIndex) {
+  var songs = loadSongs();
+  var song = songs[storageIndex];
+  if (!song) return;
+  var updated = {
+    title: song.title,
+    album: song.album || "",
+    artist: song.artist || "",
+    albumImage: song.albumImage || "",
+    lines: song.lines.slice(),
+    chords: songCopyChords(song.chords),
+    learned: !!song.learned
+  };
+  updateSongAt(storageIndex, updated);
+  songSyncClose();
+  buildSongLists();
+}
+
+function songSyncRenderResults(storageIndex, results) {
+  if (!songSyncResultsEl) return;
+  songSyncResultsEl.innerHTML = "";
+  if (!results.length) {
+    var empty = document.createElement("p");
+    empty.className = "song-sync-results__empty";
+    empty.textContent = "No se encontraron coincidencias en Spotify.";
+    songSyncResultsEl.appendChild(empty);
+    return;
+  }
+  for (var i = 0; i < results.length; i++) {
+    (function (track) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "song-sync-results__item";
+      btn.textContent = track.title + " · " + track.artist;
+      if (track.album) {
+        btn.textContent += " — " + track.album;
+      }
+      btn.addEventListener("click", function () {
+        songSyncApplyTrack(storageIndex, track);
+      });
+      songSyncResultsEl.appendChild(btn);
+    })(results[i]);
+  }
+}
+
+function songSyncOpen(storageIndex) {
+  if (!chordyIsOnline()) return;
+  var songs = loadSongs();
+  var song = songs[storageIndex];
+  if (!song || !song.pendingSync) return;
+
+  songSyncIndex = storageIndex;
+  songSyncRenderPreview(song);
+  songSyncResultsEl.innerHTML = "";
+  var loading = document.createElement("p");
+  loading.className = "song-sync-results__empty";
+  loading.textContent = "Buscando coincidencias…";
+  songSyncResultsEl.appendChild(loading);
+
+  songSyncBackdrop.classList.add("is-open");
+  songSyncEl.classList.add("is-open");
+  document.body.classList.add("song-sync-open");
+
+  chordySpotifySearch(song.title).then(function (results) {
+    if (songSyncIndex !== storageIndex) return;
+    songSyncRenderResults(storageIndex, results);
+  });
+}
+
+function songSyncUpdateButtons() {
+  var online = chordyIsOnline();
+  var btns = document.querySelectorAll(".js-song-sync");
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].disabled = !online;
+  }
+}
+
+function bindSongSyncButtons() {
+  var btns = document.querySelectorAll(".js-song-sync");
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].addEventListener("click", function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (this.disabled) return;
+      var idx = parseInt(this.getAttribute("data-song-idx"), 10);
+      if (!isNaN(idx)) songSyncOpen(idx);
+    });
+  }
+  songSyncUpdateButtons();
 }
 
 function songAppendMetaField(step, placeholder, field) {
@@ -339,7 +585,13 @@ function showSongModal() {
   songModalEl.classList.add("is-open");
   document.body.classList.add("song-modal-open");
   songEscFn = function (e) {
-    if (e.key === "Escape") songModalClose();
+    if (e.key !== "Escape") return;
+    var delDlg = document.getElementById("song-delete-modal");
+    if (delDlg && delDlg.classList.contains("is-open")) {
+      songDeleteModalClose();
+      return;
+    }
+    songModalClose();
   };
   document.addEventListener("keydown", songEscFn, true);
 }
@@ -366,6 +618,7 @@ function songModalBuildDom() {
 
   buildPickerDom();
   buildPreviewDom();
+  songSyncBuildDom();
   songModalReady = true;
 }
 
@@ -482,12 +735,24 @@ function buildViewStep() {
   closeBtn.addEventListener("click", songModalClose);
   header.appendChild(closeBtn);
 
+  var actions = document.createElement("div");
+  actions.className = "song-view__actions";
+
   var editBtn = document.createElement("button");
   editBtn.type = "button";
   editBtn.className = "song-view__edit-btn";
   editBtn.textContent = "Editar";
   editBtn.addEventListener("click", songModalEditFromView);
-  header.appendChild(editBtn);
+  actions.appendChild(editBtn);
+
+  var deleteBtn = document.createElement("button");
+  deleteBtn.type = "button";
+  deleteBtn.className = "song-view__delete-btn";
+  deleteBtn.textContent = "Eliminar";
+  deleteBtn.addEventListener("click", songDeleteFromView);
+  actions.appendChild(deleteBtn);
+
+  header.appendChild(actions);
 
   step.appendChild(header);
 
@@ -506,6 +771,14 @@ function buildViewStep() {
   viewLinesEl = document.createElement("div");
   viewLinesEl.className = "song-view";
   step.appendChild(viewLinesEl);
+
+  viewLearnedBtn = document.createElement("button");
+  viewLearnedBtn.type = "button";
+  viewLearnedBtn.className = "song-view__learned-btn";
+  viewLearnedBtn.textContent = "Marcar como aprendida";
+  viewLearnedBtn.setAttribute("aria-pressed", "false");
+  viewLearnedBtn.addEventListener("click", songToggleLearnedFromView);
+  step.appendChild(viewLearnedBtn);
 
   return step;
 }
@@ -772,6 +1045,17 @@ function songModalSave() {
     song.chords.push(songChords[i] ? songChords[i].slice() : []);
   }
   if (songEditIndex !== null) {
+    var prev = loadSongs()[songEditIndex];
+    if (prev && prev.pendingSync) {
+      song.pendingSync = true;
+    }
+    if (prev && prev.learned) {
+      song.learned = true;
+    }
+  } else if (!chordyIsOnline()) {
+    song.pendingSync = true;
+  }
+  if (songEditIndex !== null) {
     updateSongAt(songEditIndex, song);
   } else {
     addSong(song);
@@ -979,6 +1263,65 @@ function previewClose() {
   previewEl.classList.remove("is-open");
 }
 
+function songDeleteFromView() {
+  var songs = loadSongs();
+  if (songEditIndex === null || songEditIndex < 0 || songEditIndex >= songs.length) return;
+  songDeleteModalOpen(songs[songEditIndex].title, songEditIndex);
+}
+
+var songDeletePendingIndex = null;
+
+function songDeleteModalOpen(title, storageIndex) {
+  songDeletePendingIndex = storageIndex;
+  var backdrop = document.getElementById("song-delete-modal-backdrop");
+  var dialog = document.getElementById("song-delete-modal");
+  var text = document.getElementById("song-delete-modal-text");
+  if (!backdrop || !dialog || !text) return;
+  text.textContent = "¿Seguro que quieres eliminar " + title + "?";
+  backdrop.classList.add("is-open");
+  backdrop.setAttribute("aria-hidden", "false");
+  dialog.classList.add("is-open");
+  dialog.setAttribute("aria-hidden", "false");
+  document.body.classList.add("song-delete-modal-open");
+}
+
+function songDeleteModalClose() {
+  songDeletePendingIndex = null;
+  var backdrop = document.getElementById("song-delete-modal-backdrop");
+  var dialog = document.getElementById("song-delete-modal");
+  if (!backdrop || !dialog) return;
+  backdrop.classList.remove("is-open");
+  backdrop.setAttribute("aria-hidden", "true");
+  dialog.classList.remove("is-open");
+  dialog.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("song-delete-modal-open");
+}
+
+function songDeleteModalConfirm() {
+  if (songDeletePendingIndex !== null) {
+    deleteSongAt(songDeletePendingIndex);
+    buildSongLists();
+  }
+  songDeleteModalClose();
+  songModalClose();
+}
+
+function songDeleteModalInit() {
+  var delBackdrop = document.getElementById("song-delete-modal-backdrop");
+  var btnCancel = document.getElementById("song-delete-cancel");
+  var btnConfirm = document.getElementById("song-delete-confirm");
+
+  if (btnCancel) {
+    btnCancel.addEventListener("click", songDeleteModalClose);
+  }
+  if (btnConfirm) {
+    btnConfirm.addEventListener("click", songDeleteModalConfirm);
+  }
+  if (delBackdrop) {
+    delBackdrop.addEventListener("click", songDeleteModalClose);
+  }
+}
+
 function songModalEditFromView() {
   var songs = loadSongs();
   if (songEditIndex === null || songEditIndex < 0 || songEditIndex >= songs.length) return;
@@ -1007,6 +1350,37 @@ function songModalEditFromView() {
   songModalStep2.hidden = true;
   songModalStep1.hidden = false;
   songTitleInput.focus();
+}
+
+function songRefreshLearnedBtn(learned) {
+  if (!viewLearnedBtn) return;
+  viewLearnedBtn.textContent = learned
+    ? "Me olvidé esta canción"
+    : "Marcar como aprendida";
+  viewLearnedBtn.setAttribute("aria-pressed", learned ? "true" : "false");
+}
+
+function songToggleLearnedFromView() {
+  if (songEditIndex === null) return;
+  var songs = loadSongs();
+  if (songEditIndex < 0 || songEditIndex >= songs.length) return;
+  var song = songs[songEditIndex];
+  var learned = !song.learned;
+  var updated = {
+    title: song.title,
+    album: song.album || "",
+    artist: song.artist || "",
+    albumImage: song.albumImage || "",
+    lines: song.lines.slice(),
+    chords: songCopyChords(song.chords),
+    learned: learned
+  };
+  if (song.pendingSync) {
+    updated.pendingSync = true;
+  }
+  updateSongAt(songEditIndex, updated);
+  buildSongLists();
+  songModalClose();
 }
 
 function songModalOpenView(index) {
@@ -1044,6 +1418,7 @@ function songModalOpenView(index) {
     viewLinesEl.appendChild(lineDiv);
   }
 
+  songRefreshLearnedBtn(!!song.learned);
   showSongModal();
 }
 
@@ -1074,6 +1449,9 @@ function buildChordElements(text, chords) {
 
 function initSongModal() {
   songModalBuildDom();
+  songDeleteModalInit();
+  window.addEventListener("offline", songOnBrowserOffline);
+  window.addEventListener("online", songOnBrowserOnline);
   var btns = document.querySelectorAll(".js-fab-open-song-modal");
   for (var i = 0; i < btns.length; i++) {
     btns[i].addEventListener("click", function (e) {
@@ -1099,7 +1477,8 @@ var currentSortMode = "az";
 var SORT_LABELS = {
   az: "A · Z",
   za: "Z · A",
-  artist: "Por artista",
+  "artist-az": "Por artista (A-Z)",
+  "artist-za": "Por artista (Z-A)",
 };
 
 function initSongSort() {
@@ -1178,7 +1557,10 @@ function buildSongCard(storageIndex, song) {
       songCardEscape(song.albumImage) +
       '" alt="">';
   } else {
-    cover = '<div class="card__cover card__cover--empty"></div>';
+    cover =
+      '<div class="card__cover card__cover--empty" aria-hidden="true">' +
+      '<img class="card__cover-logo" src="logo.png" alt="" width="52" height="52" decoding="async">' +
+      "</div>";
   }
   var album = song.album || "";
   var line1 =
@@ -1186,8 +1568,24 @@ function buildSongCard(storageIndex, song) {
     ' <span class="card__sep">|</span> ' +
     songCardEscape(album);
   var line2 = songCardEscape(song.artist || "");
+  var syncBtn = "";
+  if (song.pendingSync) {
+    var syncIcon =
+      typeof chordyIcon === "function"
+        ? chordyIcon("arrow-repeat", "card__sync-btn__icon")
+        : '<i class="bi bi-arrow-repeat card__sync-btn__icon" aria-hidden="true"></i>';
+    syncBtn =
+      '<button type="button" class="card__sync-btn js-song-sync" data-song-idx="' +
+      storageIndex +
+      '">' +
+      syncIcon +
+      "<span>Sincronizar</span></button>";
+  }
+  var learnedClass = song.learned ? " card--song-learned" : "";
   return (
-    '<article class="card card--song js-song-card" data-song-idx="' +
+    '<article class="card card--song js-song-card' +
+    learnedClass +
+    '" data-song-idx="' +
     storageIndex +
     '">' +
     '<div class="card__row">' +
@@ -1199,7 +1597,9 @@ function buildSongCard(storageIndex, song) {
     '<p class="card__meta">' +
     line2 +
     "</p>" +
-    "</div></div></article>"
+    "</div></div>" +
+    syncBtn +
+    "</article>"
   );
 }
 
@@ -1208,6 +1608,28 @@ function bindSongCards() {
   for (var c = 0; c < allCards.length; c++) {
     allCards[c].addEventListener("click", onSongCardClick);
   }
+  bindSongSyncButtons();
+}
+
+function compareStringsReverse(a, b) {
+  return compareStrings(b, a);
+}
+
+function buildSongArtistGroupHtml(artistName, entries, songs) {
+  var sortedEntries = entries.slice().sort(function (a, b) {
+    return compareStrings(a.title, b.title);
+  });
+  var html = '<section class="song-list-group">';
+  html +=
+    '<h2 class="song-list-group__label">' +
+    songCardEscape(artistName || "Sin artista") +
+    "</h2>";
+  html += '<div class="song-list-group__items">';
+  for (var t = 0; t < sortedEntries.length; t++) {
+    html += buildSongCard(sortedEntries[t].idx, songs[sortedEntries[t].idx]);
+  }
+  html += "</div></section>";
+  return html;
 }
 
 function buildSongLists() {
@@ -1223,33 +1645,29 @@ function buildSongLists() {
 
   var indexed = [];
   for (var i = 0; i < songs.length; i++) {
-    indexed.push({ idx: i, title: songs[i].title, artist: songs[i].artist });
+    indexed.push({ idx: i, title: songs[i].title, artist: songs[i].artist || "" });
   }
 
-  if (currentSortMode === "artist") {
+  if (currentSortMode === "artist-az" || currentSortMode === "artist-za") {
     var byArtist = {};
     for (var j = 0; j < indexed.length; j++) {
-      var artist = indexed[j].artist;
-      if (!byArtist[artist]) byArtist[artist] = [];
-      byArtist[artist].push(indexed[j]);
+      var artistKey = indexed[j].artist || "Sin artista";
+      if (!byArtist[artistKey]) byArtist[artistKey] = [];
+      byArtist[artistKey].push(indexed[j]);
     }
 
     var artistNames = Object.keys(byArtist);
-    artistNames.sort(compareStrings);
+    artistNames.sort(
+      currentSortMode === "artist-za" ? compareStringsReverse : compareStrings
+    );
 
     var artistHtml = "";
     for (var k = 0; k < artistNames.length; k++) {
-      var name = artistNames[k];
-      var group = byArtist[name];
-      var firstIdx = group[0].idx;
-      var titles = [];
-      for (var t = 0; t < group.length; t++) titles.push(group[t].title);
-      artistHtml += buildSongCard(firstIdx, {
-        title: name,
-        album: "",
-        artist: titles.join(", "),
-        albumImage: songs[firstIdx].albumImage || ""
-      });
+      artistHtml += buildSongArtistGroupHtml(
+        artistNames[k],
+        byArtist[artistNames[k]],
+        songs
+      );
     }
     listEl.innerHTML = artistHtml;
     bindSongCards();
@@ -1270,6 +1688,7 @@ function buildSongLists() {
 }
 
 function onSongCardClick(e) {
+  if (e.target.closest(".js-song-sync")) return;
   var idx = parseInt(e.currentTarget.getAttribute("data-song-idx"), 10);
   if (isNaN(idx)) return;
   if (typeof songModalOpenView === "function") songModalOpenView(idx);

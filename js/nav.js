@@ -65,6 +65,27 @@
     btn.addEventListener("click", toggleTheme);
   }
 
+  function updateConnectionStatus() {
+    var btn = document.querySelector(".connection-status");
+    if (!btn) return;
+    var online = navigator.onLine;
+    btn.setAttribute("aria-label", online ? "Con conexión" : "Sin conexión");
+    btn.setAttribute("title", online ? "Con conexión" : "Sin conexión");
+    btn.classList.toggle("is-offline", !online);
+    btn.classList.toggle("is-online", online);
+    var iconName = online ? "wifi" : "wifi-off";
+    btn.innerHTML =
+      typeof chordyIcon === "function"
+        ? chordyIcon(iconName, "theme-toggle__icon")
+        : "";
+  }
+
+  function initConnectionStatus() {
+    updateConnectionStatus();
+    window.addEventListener("online", updateConnectionStatus);
+    window.addEventListener("offline", updateConnectionStatus);
+  }
+
   function initNav() {
     var page = document.body.getAttribute("data-page");
     if (!page) return;
@@ -82,6 +103,7 @@
     applyTheme(getStoredTheme());
     initNav();
     initThemeToggle();
+    initConnectionStatus();
   }
 
   if (document.readyState === "loading") {

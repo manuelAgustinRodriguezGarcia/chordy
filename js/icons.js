@@ -9,6 +9,9 @@ var CHORDY_BI_ICONS = {
   "chevron-down": "bi-chevron-down",
   pencil: "bi-pencil",
   "trash-2": "bi-trash",
+  wifi: "bi-wifi",
+  "wifi-off": "bi-wifi-off",
+  "arrow-repeat": "bi-arrow-repeat",
 };
 
 function chordyIcon(name, className) {

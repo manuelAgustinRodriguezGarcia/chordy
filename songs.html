@@ -43,6 +43,15 @@
         </div>
       </div>
       <div class="app-header__actions">
+        <span
+          class="connection-status is-online"
+          role="status"
+          aria-live="polite"
+          aria-label="Con conexión"
+          title="Con conexión"
+        >
+          <i class="bi bi-wifi theme-toggle__icon" aria-hidden="true"></i>
+        </span>
         <button type="button" class="theme-toggle" aria-label="Cambiar tema" aria-pressed="false">
           <i class="bi bi-sun theme-toggle__icon" aria-hidden="true"></i>
         </button>
@@ -72,14 +81,37 @@
             <li role="option" class="sort-dropdown__option" data-value="za" aria-selected="false" tabindex="-1">
               Z · A
             </li>
-            <li role="option" class="sort-dropdown__option" data-value="artist" aria-selected="false" tabindex="-1">
-              Por artista
+            <li role="option" class="sort-dropdown__option" data-value="artist-az" aria-selected="false" tabindex="-1">
+              Por artista (A-Z)
+            </li>
+            <li role="option" class="sort-dropdown__option" data-value="artist-za" aria-selected="false" tabindex="-1">
+              Por artista (Z-A)
             </li>
           </ul>
         </div>
       </div>
       <div id="list-songs"></div>
     </main>
+
+    <div id="song-delete-modal-backdrop" class="chord-delete-modal-backdrop" aria-hidden="true"></div>
+    <div
+      id="song-delete-modal"
+      class="chord-delete-modal"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="song-delete-modal-text"
+      aria-hidden="true"
+    >
+      <p id="song-delete-modal-text" class="chord-delete-modal__text"></p>
+      <div class="chord-delete-modal__actions">
+        <button type="button" id="song-delete-cancel" class="chord-delete-modal__btn chord-delete-modal__btn--ghost">
+          Cancelar
+        </button>
+        <button type="button" id="song-delete-confirm" class="chord-delete-modal__btn chord-delete-modal__btn--danger">
+          Eliminar
+        </button>
+      </div>
+    </div>
 
     <div class="bottom-shell">
       <div id="fab-backdrop" class="fab-backdrop" aria-hidden="true"></div>
