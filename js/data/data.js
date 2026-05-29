@@ -1,11 +1,11 @@
-var CHORDY_DB_NAME = "chordy";
-var CHORDY_DB_VERSION = 1;
-var CHORDY_META_STORE = "meta";
+let CHORDY_DB_NAME = "chordy";
+let CHORDY_DB_VERSION = 1;
+let CHORDY_META_STORE = "meta";
 
-var chordyDb = null;
-var chordySongsCache = [];
-var chordyChordsCache = [];
-var chordyArtistsCache = [];
+let chordyDb = null;
+let chordySongsCache = [];
+let chordyChordsCache = [];
+let chordyArtistsCache = [];
 
 function artistNorm(name) {
   return (name || "").trim().toUpperCase();
@@ -17,7 +17,7 @@ function chordyDbOpen() {
       resolve(chordyDb);
       return;
     }
-    var req = indexedDB.open(CHORDY_DB_NAME, CHORDY_DB_VERSION);
+    let req = indexedDB.open(CHORDY_DB_NAME, CHORDY_DB_VERSION);
     req.onerror = function () {
       reject(req.error);
     };
@@ -26,7 +26,7 @@ function chordyDbOpen() {
       resolve(chordyDb);
     };
     req.onupgradeneeded = function (event) {
-      var database = event.target.result;
+      let database = event.target.result;
       if (!database.objectStoreNames.contains(CHORDY_META_STORE)) {
         database.createObjectStore(CHORDY_META_STORE, { keyPath: "key" });
       }
@@ -37,10 +37,10 @@ function chordyDbOpen() {
 function chordyDbGet(key) {
   return chordyDbOpen().then(function (database) {
     return new Promise(function (resolve, reject) {
-      var tx = database.transaction(CHORDY_META_STORE, "readonly");
-      var req = tx.objectStore(CHORDY_META_STORE).get(key);
+      let tx = database.transaction(CHORDY_META_STORE, "readonly");
+      let req = tx.objectStore(CHORDY_META_STORE).get(key);
       req.onsuccess = function () {
-        var row = req.result;
+        let row = req.result;
         resolve(row ? row.value : null);
       };
       req.onerror = function () {
@@ -53,8 +53,8 @@ function chordyDbGet(key) {
 function chordyDbSet(key, value) {
   return chordyDbOpen().then(function (database) {
     return new Promise(function (resolve, reject) {
-      var tx = database.transaction(CHORDY_META_STORE, "readwrite");
-      var req = tx.objectStore(CHORDY_META_STORE).put({ key: key, value: value });
+      let tx = database.transaction(CHORDY_META_STORE, "readwrite");
+      let req = tx.objectStore(CHORDY_META_STORE).put({ key: key, value: value });
       req.onsuccess = function () {
         resolve();
       };
@@ -67,9 +67,9 @@ function chordyDbSet(key, value) {
 
 function chordyReadLegacyList(storageKey) {
   try {
-    var raw = localStorage.getItem(storageKey);
+    let raw = localStorage.getItem(storageKey);
     if (!raw) return null;
-    var list = JSON.parse(raw);
+    let list = JSON.parse(raw);
     return Array.isArray(list) ? list : null;
   } catch (e) {
     return null;
@@ -81,13 +81,13 @@ function chordyMigrateFromLocalStorage() {
     return Promise.resolve();
   }
 
-  var songs = chordyReadLegacyList("chordy_songs");
-  var chords = chordyReadLegacyList("chordy_chords");
+  let songs = chordyReadLegacyList("chordy_songs");
+  let chords = chordyReadLegacyList("chordy_chords");
   if (!chords) {
     chords = chordyReadLegacyList("acordy_chords");
   }
 
-  var writes = [];
+  let writes = [];
   if (songs && songs.length) {
     writes.push(chordyDbSet("songs", songs));
   }
@@ -135,7 +135,7 @@ function chordyPersistArtists() {
 }
 
 function chordySyncArtistsFromSongs() {
-  for (var i = 0; i < chordySongsCache.length; i++) {
+  for (let i = 0; i < chordySongsCache.length; i++) {
     if (chordySongsCache[i].artist) {
       addArtist(chordySongsCache[i].artist);
     }
@@ -147,9 +147,9 @@ function loadArtists() {
 }
 
 function findArtistExact(query) {
-  var q = artistNorm(query);
+  let q = artistNorm(query);
   if (!q) return null;
-  for (var i = 0; i < chordyArtistsCache.length; i++) {
+  for (let i = 0; i < chordyArtistsCache.length; i++) {
     if (artistNorm(chordyArtistsCache[i]) === q) {
       return chordyArtistsCache[i];
     }
@@ -158,10 +158,10 @@ function findArtistExact(query) {
 }
 
 function filterArtists(query) {
-  var q = artistNorm(query);
+  let q = artistNorm(query);
   if (!q) return [];
-  var out = [];
-  for (var i = 0; i < chordyArtistsCache.length; i++) {
+  let out = [];
+  for (let i = 0; i < chordyArtistsCache.length; i++) {
     if (artistNorm(chordyArtistsCache[i]).indexOf(q) !== -1) {
       out.push(chordyArtistsCache[i]);
     }
@@ -176,7 +176,7 @@ function addArtist(name) {
   chordyPersistArtists();
 }
 
-var chordyStorageReady = initChordyStorage();
+let chordyStorageReady = initChordyStorage();
 
 function loadSongs() {
   return chordySongsCache.slice();
@@ -188,14 +188,14 @@ function saveSongs(list) {
 }
 
 function addSong(song) {
-  var list = loadSongs();
+  let list = loadSongs();
   list.push(song);
   saveSongs(list);
   if (song.artist) addArtist(song.artist);
 }
 
 function updateSongAt(index, song) {
-  var list = loadSongs();
+  let list = loadSongs();
   if (index < 0 || index >= list.length) return false;
   list[index] = song;
   saveSongs(list);
@@ -204,7 +204,7 @@ function updateSongAt(index, song) {
 }
 
 function deleteSongAt(index) {
-  var list = loadSongs();
+  let list = loadSongs();
   if (index < 0 || index >= list.length) return false;
   list.splice(index, 1);
   saveSongs(list);
@@ -226,12 +226,12 @@ function isValidChord(item) {
 }
 
 function loadChords() {
-  var list = chordyChordsCache;
+  let list = chordyChordsCache;
   if (!list.length) {
     return defaultChords();
   }
-  var out = [];
-  for (var i = 0; i < list.length; i++) {
+  let out = [];
+  for (let i = 0; i < list.length; i++) {
     if (isValidChord(list[i])) {
       out.push(list[i]);
     }
@@ -251,7 +251,7 @@ function addChord(chord) {
   if (!isValidChord(chord)) {
     return;
   }
-  var list = chordyChordsCache.slice();
+  let list = chordyChordsCache.slice();
   list.push(chord);
   saveChords(list);
 }
@@ -260,7 +260,7 @@ function updateChordAt(index, chord) {
   if (!isValidChord(chord)) {
     return false;
   }
-  var list = chordyChordsCache.slice();
+  let list = chordyChordsCache.slice();
   if (index < 0 || index >= list.length) {
     return false;
   }
@@ -270,7 +270,7 @@ function updateChordAt(index, chord) {
 }
 
 function deleteChordAt(index) {
-  var list = chordyChordsCache.slice();
+  let list = chordyChordsCache.slice();
   if (index < 0 || index >= list.length) {
     return false;
   }

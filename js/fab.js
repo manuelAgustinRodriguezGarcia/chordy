@@ -1,9 +1,9 @@
 window.chordyCloseFabMenu = function () {};
 
 function initFab() {
-  var fab = document.getElementById("fab-main");
-  var panel = document.getElementById("fab-panel");
-  var backdrop = document.getElementById("fab-backdrop");
+  let fab = document.getElementById("fab-main");
+  let panel = document.getElementById("fab-panel");
+  let backdrop = document.getElementById("fab-backdrop");
   if (!fab || !panel || !backdrop) {
     return;
   }
@@ -21,7 +21,7 @@ function initFab() {
   };
 
   fab.addEventListener("click", function () {
-    var next = !fab.classList.contains("is-open");
+    let next = !fab.classList.contains("is-open");
     setOpen(next);
   });
 
@@ -37,10 +37,10 @@ function initFab() {
 }
 
 function initSongFabNav() {
-  var page = document.body.getAttribute("data-page");
+  let page = document.body.getAttribute("data-page");
   if (page === "songs") return;
-  var btns = document.querySelectorAll(".js-fab-open-song-modal");
-  for (var i = 0; i < btns.length; i++) {
+  let btns = document.querySelectorAll(".js-fab-open-song-modal");
+  for (let i = 0; i < btns.length; i++) {
     btns[i].addEventListener("click", function () {
       sessionStorage.setItem("chordyOpenSongModal", "1");
       window.location.href = "songs.html";

@@ -6,7 +6,7 @@ function chordySpotifySearch(query) {
   if (!chordyIsOnline()) {
     return Promise.resolve([]);
   }
-  var q = (query || "").trim();
+  let q = (query || "").trim();
   if (!q) {
     return Promise.resolve([]);
   }
@@ -24,68 +24,68 @@ function chordySpotifySearch(query) {
 }
 
 
-var songModalBackdrop = null;
-var songModalEl = null;
-var songModalStep1 = null;
-var songModalStep1Title = null;
-var songModalStep2 = null;
-var songModalViewStep = null;
-var songTitleInput = null;
-var songAlbumInput = null;
-var songTitleWrap = null;
-var songAlbumWrap = null;
-var songArtistInput = null;
-var songArtistWrap = null;
-var songTitleDropdown = null;
-var songArtistDropdown = null;
-var songTitleTrash = null;
-var songAlbumTrash = null;
-var songArtistTrash = null;
-var songTitleSearchTimer = null;
-var songFormAlbumImage = "";
-var songFormManual = { title: true, album: true, artist: true };
-var songLyricsArea = null;
-var songLinesBox = null;
-var songSaveBtn = null;
-var songLines = [];
-var songChords = [];
-var songExtraSlots = [];
-var songEscFn = null;
-var songModalReady = false;
-var songEditIndex = null;
+let songModalBackdrop = null;
+let songModalEl = null;
+let songModalStep1 = null;
+let songModalStep1Title = null;
+let songModalStep2 = null;
+let songModalViewStep = null;
+let songTitleInput = null;
+let songAlbumInput = null;
+let songTitleWrap = null;
+let songAlbumWrap = null;
+let songArtistInput = null;
+let songArtistWrap = null;
+let songTitleDropdown = null;
+let songArtistDropdown = null;
+let songTitleTrash = null;
+let songAlbumTrash = null;
+let songArtistTrash = null;
+let songTitleSearchTimer = null;
+let songFormAlbumImage = "";
+let songFormManual = { title: true, album: true, artist: true };
+let songLyricsArea = null;
+let songLinesBox = null;
+let songSaveBtn = null;
+let songLines = [];
+let songChords = [];
+let songExtraSlots = [];
+let songEscFn = null;
+let songModalReady = false;
+let songEditIndex = null;
 
-var pickerBackdrop = null;
-var pickerEl = null;
-var pickerSearchInput = null;
-var pickerListEl = null;
-var pickerConfirmBtn = null;
-var pickerSelectedName = null;
-var pickerLineIndex = -1;
-var pickerSlotIndex = -1;
+let pickerBackdrop = null;
+let pickerEl = null;
+let pickerSearchInput = null;
+let pickerListEl = null;
+let pickerConfirmBtn = null;
+let pickerSelectedName = null;
+let pickerLineIndex = -1;
+let pickerSlotIndex = -1;
 
-var previewBackdrop = null;
-var previewEl = null;
-var previewDiagramEl = null;
-var previewActionsEl = null;
-var previewLineIndex = -1;
-var previewSlotIndex = -1;
+let previewBackdrop = null;
+let previewEl = null;
+let previewDiagramEl = null;
+let previewActionsEl = null;
+let previewLineIndex = -1;
+let previewSlotIndex = -1;
 
-var viewTitleEl = null;
-var viewAlbumEl = null;
-var viewArtistEl = null;
-var viewLinesEl = null;
-var viewLearnedBtn = null;
+let viewTitleEl = null;
+let viewAlbumEl = null;
+let viewArtistEl = null;
+let viewLinesEl = null;
+let viewLearnedBtn = null;
 
-var SLOT_INTERVAL = 3;
+let SLOT_INTERVAL = 3;
 
 function songFormSyncTrash(field) {
-  var trash =
+  let trash =
     field === "title"
       ? songTitleTrash
       : field === "album"
         ? songAlbumTrash
         : songArtistTrash;
-  var input =
+  let input =
     field === "title"
       ? songTitleInput
       : field === "album"
@@ -155,7 +155,7 @@ function songTitleSearchRun() {
     songHideTitleDropdown();
     return;
   }
-  var query = songTitleInput.value.trim();
+  let query = songTitleInput.value.trim();
   if (!songTitleDropdown) return;
   songTitleDropdown.innerHTML = "";
   if (!query) {
@@ -168,9 +168,9 @@ function songTitleSearchRun() {
       return;
     }
     songTitleDropdown.innerHTML = "";
-    for (var i = 0; i < results.length; i++) {
+    for (let i = 0; i < results.length; i++) {
       (function (track) {
-        var btn = document.createElement("button");
+        let btn = document.createElement("button");
         btn.type = "button";
         btn.className = "song-meta-dropdown__item";
         btn.textContent = track.title + " · " + track.artist;
@@ -183,7 +183,7 @@ function songTitleSearchRun() {
         songTitleDropdown.appendChild(btn);
       })(results[i]);
     }
-    var useBtn = document.createElement("button");
+    let useBtn = document.createElement("button");
     useBtn.type = "button";
     useBtn.className = "song-meta-dropdown__own";
     useBtn.textContent = '"' + query + '"';
@@ -228,20 +228,20 @@ function songOnBrowserOnline() {
 }
 
 function songCopyChords(chords) {
-  var out = [];
-  for (var i = 0; i < chords.length; i++) {
+  let out = [];
+  for (let i = 0; i < chords.length; i++) {
     out.push(chords[i] ? chords[i].slice() : []);
   }
   return out;
 }
 
-var songSyncBackdrop = null;
-var songSyncEl = null;
-var songSyncPreviewEl = null;
-var songSyncResultsEl = null;
-var songSyncHintEl = null;
-var songSyncSkipBtn = null;
-var songSyncIndex = null;
+let songSyncBackdrop = null;
+let songSyncEl = null;
+let songSyncPreviewEl = null;
+let songSyncResultsEl = null;
+let songSyncHintEl = null;
+let songSyncSkipBtn = null;
+let songSyncIndex = null;
 
 function songSyncBuildDom() {
   songSyncBackdrop = document.createElement("div");
@@ -254,7 +254,7 @@ function songSyncBuildDom() {
     e.stopPropagation();
   });
 
-  var title = document.createElement("h2");
+  let title = document.createElement("h2");
   title.className = "chord-modal__title";
   title.textContent = "Sincronizar canción";
   songSyncEl.appendChild(title);
@@ -273,7 +273,7 @@ function songSyncBuildDom() {
   songSyncResultsEl.className = "song-sync-results";
   songSyncEl.appendChild(songSyncResultsEl);
 
-  var actions = document.createElement("div");
+  let actions = document.createElement("div");
   actions.className = "chord-modal__actions song-sync-actions";
 
   songSyncSkipBtn = document.createElement("button");
@@ -285,7 +285,7 @@ function songSyncBuildDom() {
   });
   actions.appendChild(songSyncSkipBtn);
 
-  var closeBtn = document.createElement("button");
+  let closeBtn = document.createElement("button");
   closeBtn.type = "button";
   closeBtn.className = "chord-modal__btn chord-modal__btn--ghost";
   closeBtn.textContent = "Cerrar";
@@ -307,27 +307,27 @@ function songSyncClose() {
 function songSyncRenderPreview(song) {
   if (!songSyncPreviewEl || !song) return;
   songSyncPreviewEl.innerHTML = "";
-  var row = document.createElement("div");
+  let row = document.createElement("div");
   row.className = "song-sync-preview__row";
 
   if (song.albumImage) {
-    var img = document.createElement("img");
+    let img = document.createElement("img");
     img.className = "song-sync-preview__cover";
     img.src = song.albumImage;
     img.alt = "";
     row.appendChild(img);
   } else {
-    var empty = document.createElement("div");
+    let empty = document.createElement("div");
     empty.className = "song-sync-preview__cover song-sync-preview__cover--empty";
     row.appendChild(empty);
   }
 
-  var body = document.createElement("div");
+  let body = document.createElement("div");
   body.className = "song-sync-preview__body";
-  var t = document.createElement("p");
+  let t = document.createElement("p");
   t.className = "song-sync-preview__title";
   t.textContent = song.title;
-  var a = document.createElement("p");
+  let a = document.createElement("p");
   a.className = "song-sync-preview__meta";
   a.textContent = (song.album || "—") + " · " + (song.artist || "—");
   body.appendChild(t);
@@ -337,10 +337,10 @@ function songSyncRenderPreview(song) {
 }
 
 function songSyncApplyTrack(storageIndex, track) {
-  var songs = loadSongs();
-  var song = songs[storageIndex];
+  let songs = loadSongs();
+  let song = songs[storageIndex];
   if (!song || !track) return;
-  var updated = {
+  let updated = {
     title: track.title,
     album: track.album || song.album,
     artist: track.artist || song.artist,
@@ -355,10 +355,10 @@ function songSyncApplyTrack(storageIndex, track) {
 }
 
 function songSyncSkip(storageIndex) {
-  var songs = loadSongs();
-  var song = songs[storageIndex];
+  let songs = loadSongs();
+  let song = songs[storageIndex];
   if (!song) return;
-  var updated = {
+  let updated = {
     title: song.title,
     album: song.album || "",
     artist: song.artist || "",
@@ -376,15 +376,15 @@ function songSyncRenderResults(storageIndex, results) {
   if (!songSyncResultsEl) return;
   songSyncResultsEl.innerHTML = "";
   if (!results.length) {
-    var empty = document.createElement("p");
+    let empty = document.createElement("p");
     empty.className = "song-sync-results__empty";
     empty.textContent = "No se encontraron coincidencias en Spotify.";
     songSyncResultsEl.appendChild(empty);
     return;
   }
-  for (var i = 0; i < results.length; i++) {
+  for (let i = 0; i < results.length; i++) {
     (function (track) {
-      var btn = document.createElement("button");
+      let btn = document.createElement("button");
       btn.type = "button";
       btn.className = "song-sync-results__item";
       btn.textContent = track.title + " · " + track.artist;
@@ -401,14 +401,14 @@ function songSyncRenderResults(storageIndex, results) {
 
 function songSyncOpen(storageIndex) {
   if (!chordyIsOnline()) return;
-  var songs = loadSongs();
-  var song = songs[storageIndex];
+  let songs = loadSongs();
+  let song = songs[storageIndex];
   if (!song || !song.pendingSync) return;
 
   songSyncIndex = storageIndex;
   songSyncRenderPreview(song);
   songSyncResultsEl.innerHTML = "";
-  var loading = document.createElement("p");
+  let loading = document.createElement("p");
   loading.className = "song-sync-results__empty";
   loading.textContent = "Buscando coincidencias…";
   songSyncResultsEl.appendChild(loading);
@@ -424,21 +424,21 @@ function songSyncOpen(storageIndex) {
 }
 
 function songSyncUpdateButtons() {
-  var online = chordyIsOnline();
-  var btns = document.querySelectorAll(".js-song-sync");
-  for (var i = 0; i < btns.length; i++) {
+  let online = chordyIsOnline();
+  let btns = document.querySelectorAll(".js-song-sync");
+  for (let i = 0; i < btns.length; i++) {
     btns[i].disabled = !online;
   }
 }
 
 function bindSongSyncButtons() {
-  var btns = document.querySelectorAll(".js-song-sync");
-  for (var i = 0; i < btns.length; i++) {
+  let btns = document.querySelectorAll(".js-song-sync");
+  for (let i = 0; i < btns.length; i++) {
     btns[i].addEventListener("click", function (e) {
       e.preventDefault();
       e.stopPropagation();
       if (this.disabled) return;
-      var idx = parseInt(this.getAttribute("data-song-idx"), 10);
+      let idx = parseInt(this.getAttribute("data-song-idx"), 10);
       if (!isNaN(idx)) songSyncOpen(idx);
     });
   }
@@ -446,19 +446,19 @@ function bindSongSyncButtons() {
 }
 
 function songAppendMetaField(step, placeholder, field) {
-  var wrap = document.createElement("div");
+  let wrap = document.createElement("div");
   wrap.className = "song-meta-field";
 
-  var row = document.createElement("div");
+  let row = document.createElement("div");
   row.className = "song-meta-field__row";
 
-  var input = document.createElement("input");
+  let input = document.createElement("input");
   input.type = "text";
   input.className = "chord-modal__input song-modal__field";
   input.placeholder = placeholder;
   input.setAttribute("autocomplete", "off");
 
-  var trash = document.createElement("button");
+  let trash = document.createElement("button");
   trash.type = "button";
   trash.className = "song-meta-field__trash";
   trash.hidden = true;
@@ -475,7 +475,7 @@ function songAppendMetaField(step, placeholder, field) {
   row.appendChild(trash);
   wrap.appendChild(row);
 
-  var dropdown = null;
+  let dropdown = null;
   if (field === "title") {
     dropdown = document.createElement("div");
     dropdown.className = "song-meta-dropdown";
@@ -531,15 +531,15 @@ function slotCount(text, lineIndex) {
 }
 
 function slotToCharPos(slotIndex, textLength) {
-  var pos = slotIndex * SLOT_INTERVAL;
+  let pos = slotIndex * SLOT_INTERVAL;
   return pos > textLength ? textLength : pos;
 }
 
 function getChordAtSlot(lineIndex, slotIndex) {
-  var chords = songChords[lineIndex];
+  let chords = songChords[lineIndex];
   if (!chords) return null;
-  var pos = slotToCharPos(slotIndex, songLines[lineIndex].length);
-  for (var i = 0; i < chords.length; i++) {
+  let pos = slotToCharPos(slotIndex, songLines[lineIndex].length);
+  for (let i = 0; i < chords.length; i++) {
     if (chords[i].pos === pos) return chords[i];
   }
   return null;
@@ -547,24 +547,24 @@ function getChordAtSlot(lineIndex, slotIndex) {
 
 function setChordAtSlot(lineIndex, slotIndex, name) {
   if (!songChords[lineIndex]) songChords[lineIndex] = [];
-  var chords = songChords[lineIndex];
-  var pos = slotToCharPos(slotIndex, songLines[lineIndex].length);
-  for (var i = chords.length - 1; i >= 0; i--) {
+  let chords = songChords[lineIndex];
+  let pos = slotToCharPos(slotIndex, songLines[lineIndex].length);
+  for (let i = chords.length - 1; i >= 0; i--) {
     if (chords[i].pos === pos) chords.splice(i, 1);
   }
   if (name) chords.push({ pos: pos, name: name });
 }
 
 function hasAnyChord() {
-  for (var i = 0; i < songChords.length; i++) {
+  for (let i = 0; i < songChords.length; i++) {
     if (songChords[i] && songChords[i].length > 0) return true;
   }
   return false;
 }
 
 function findChordByName(name) {
-  var all = loadChords();
-  for (var i = 0; i < all.length; i++) {
+  let all = loadChords();
+  for (let i = 0; i < all.length; i++) {
     if (all[i].name === name) return all[i];
   }
   return null;
@@ -576,7 +576,7 @@ function showSongModal() {
   document.body.classList.add("song-modal-open");
   songEscFn = function (e) {
     if (e.key !== "Escape") return;
-    var delDlg = document.getElementById("song-delete-modal");
+    let delDlg = document.getElementById("song-delete-modal");
     if (delDlg && delDlg.classList.contains("is-open")) {
       songDeleteModalClose();
       return;
@@ -613,7 +613,7 @@ function songModalBuildDom() {
 }
 
 function buildStep1() {
-  var step = document.createElement("div");
+  let step = document.createElement("div");
   step.className = "song-modal__step";
 
   songModalStep1Title = document.createElement("h2");
@@ -625,12 +625,12 @@ function buildStep1() {
   songAppendMetaField(step, "Álbum", "album");
   songAppendMetaField(step, "Artista", "artist");
 
-  var label = document.createElement("p");
+  let label = document.createElement("p");
   label.className = "song-modal__label";
   label.textContent = "Agregar la letra de la canción";
   step.appendChild(label);
 
-  var hint = document.createElement("p");
+  let hint = document.createElement("p");
   hint.className = "chord-modal__hint";
   hint.textContent =
     "Escribe la letra de la canción separada en versos como tú prefieras. Consejo: también puedes buscarla en Google, copiarla y pegarla aquí.";
@@ -642,17 +642,17 @@ function buildStep1() {
   songLyricsArea.rows = 8;
   step.appendChild(songLyricsArea);
 
-  var actions = document.createElement("div");
+  let actions = document.createElement("div");
   actions.className = "chord-modal__actions";
 
-  var cancelBtn = document.createElement("button");
+  let cancelBtn = document.createElement("button");
   cancelBtn.type = "button";
   cancelBtn.className = "chord-modal__btn chord-modal__btn--ghost";
   cancelBtn.textContent = "Cancelar";
   cancelBtn.addEventListener("click", songModalClose);
   actions.appendChild(cancelBtn);
 
-  var nextBtn = document.createElement("button");
+  let nextBtn = document.createElement("button");
   nextBtn.type = "button";
   nextBtn.className = "chord-modal__btn chord-modal__btn--primary";
   nextBtn.textContent = "Siguiente";
@@ -664,11 +664,11 @@ function buildStep1() {
 }
 
 function buildStep2() {
-  var step = document.createElement("div");
+  let step = document.createElement("div");
   step.className = "song-modal__step";
   step.hidden = true;
 
-  var backBtn = document.createElement("button");
+  let backBtn = document.createElement("button");
   backBtn.type = "button";
   backBtn.className = "song-modal__back";
   backBtn.textContent = "\u2190 Volver";
@@ -678,7 +678,7 @@ function buildStep2() {
   });
   step.appendChild(backBtn);
 
-  var title = document.createElement("h2");
+  let title = document.createElement("h2");
   title.className = "chord-modal__title";
   title.textContent = "Asignar acordes";
   step.appendChild(title);
@@ -687,7 +687,7 @@ function buildStep2() {
   songLinesBox.className = "song-modal__lines";
   step.appendChild(songLinesBox);
 
-  var addVerseBtn = document.createElement("button");
+  let addVerseBtn = document.createElement("button");
   addVerseBtn.type = "button";
   addVerseBtn.className = "song-modal__add-verse";
   addVerseBtn.textContent = "+ Agregar verso";
@@ -711,31 +711,31 @@ function buildStep2() {
 }
 
 function buildViewStep() {
-  var step = document.createElement("div");
+  let step = document.createElement("div");
   step.className = "song-modal__step";
   step.hidden = true;
 
-  var header = document.createElement("div");
+  let header = document.createElement("div");
   header.className = "song-view__header";
 
-  var closeBtn = document.createElement("button");
+  let closeBtn = document.createElement("button");
   closeBtn.type = "button";
   closeBtn.className = "song-modal__back";
   closeBtn.textContent = "\u2190 Cerrar";
   closeBtn.addEventListener("click", songModalClose);
   header.appendChild(closeBtn);
 
-  var actions = document.createElement("div");
+  let actions = document.createElement("div");
   actions.className = "song-view__actions";
 
-  var editBtn = document.createElement("button");
+  let editBtn = document.createElement("button");
   editBtn.type = "button";
   editBtn.className = "song-view__edit-btn";
   editBtn.textContent = "Editar";
   editBtn.addEventListener("click", songModalEditFromView);
   actions.appendChild(editBtn);
 
-  var deleteBtn = document.createElement("button");
+  let deleteBtn = document.createElement("button");
   deleteBtn.type = "button";
   deleteBtn.className = "song-view__delete-btn";
   deleteBtn.textContent = "Eliminar";
@@ -778,18 +778,18 @@ function songArtistDropdownRefresh() {
     songArtistDropdown.hidden = true;
     return;
   }
-  var query = songArtistInput.value.trim();
+  let query = songArtistInput.value.trim();
   songArtistDropdown.innerHTML = "";
   if (!query) {
     songArtistDropdown.hidden = true;
     return;
   }
 
-  var matches = filterArtists(query);
-  var exact = findArtistExact(query);
+  let matches = filterArtists(query);
+  let exact = findArtistExact(query);
 
-  for (var i = 0; i < matches.length; i++) {
-    var item = document.createElement("button");
+  for (let i = 0; i < matches.length; i++) {
+    let item = document.createElement("button");
     item.type = "button";
     item.className = "song-artist-dropdown__item";
     item.textContent = matches[i];
@@ -804,7 +804,7 @@ function songArtistDropdownRefresh() {
   }
 
   if (!exact) {
-    var addBtn = document.createElement("button");
+    let addBtn = document.createElement("button");
     addBtn.type = "button";
     addBtn.className = "song-artist-dropdown__add";
     addBtn.textContent = "Agregar artista";
@@ -812,7 +812,7 @@ function songArtistDropdownRefresh() {
       e.preventDefault();
     });
     addBtn.addEventListener("click", function () {
-      var name = songArtistInput.value.trim();
+      let name = songArtistInput.value.trim();
       addArtist(name);
       songArtistInput.value = name;
       songArtistDropdownRefresh();
@@ -856,18 +856,18 @@ function songModalClose() {
 }
 
 function songGoStep2() {
-  var title = songTitleInput.value.trim();
-  var album = songAlbumInput.value.trim();
-  var artist = songArtistInput.value.trim();
-  var lyrics = songLyricsArea.value;
+  let title = songTitleInput.value.trim();
+  let album = songAlbumInput.value.trim();
+  let artist = songArtistInput.value.trim();
+  let lyrics = songLyricsArea.value;
   if (!title || !album || !artist || !lyrics.trim()) return;
   addArtist(artist);
-  var oldSong =
+  let oldSong =
     songEditIndex !== null ? loadSongs()[songEditIndex] : null;
   songLines = lyrics.split("\n");
   songChords = [];
   songExtraSlots = [];
-  for (var i = 0; i < songLines.length; i++) {
+  for (let i = 0; i < songLines.length; i++) {
     if (
       oldSong &&
       oldSong.lines[i] === songLines[i] &&
@@ -889,19 +889,19 @@ function songGoStep2() {
 
 function renderAllLines() {
   songLinesBox.innerHTML = "";
-  for (var i = 0; i < songLines.length; i++) {
+  for (let i = 0; i < songLines.length; i++) {
     songLinesBox.appendChild(renderLine(i));
   }
 }
 
 function renderLine(lineIndex) {
-  var text = songLines[lineIndex];
-  var wrap = document.createElement("div");
+  let text = songLines[lineIndex];
+  let wrap = document.createElement("div");
   wrap.className = "song-line";
   wrap.setAttribute("data-line", String(lineIndex));
 
   if (!text.trim()) {
-    var placeholder = document.createElement("div");
+    let placeholder = document.createElement("div");
     placeholder.className = "song-line__text song-line__text--editable song-line__text--empty";
     placeholder.textContent = "(verso vacío — toca para editar)";
     placeholder.setAttribute("data-line", String(lineIndex));
@@ -910,14 +910,14 @@ function renderLine(lineIndex) {
     return wrap;
   }
 
-  var slotsRow = document.createElement("div");
+  let slotsRow = document.createElement("div");
   slotsRow.className = "song-line__slots";
-  var total = slotCount(text, lineIndex);
+  let total = slotCount(text, lineIndex);
 
-  for (var s = 0; s < total; s++) {
-    var chord = getChordAtSlot(lineIndex, s);
+  for (let s = 0; s < total; s++) {
+    let chord = getChordAtSlot(lineIndex, s);
     if (chord) {
-      var label = document.createElement("span");
+      let label = document.createElement("span");
       label.className = "song-line__chord-lbl";
       label.textContent = chord.name;
       label.setAttribute("data-line", String(lineIndex));
@@ -925,7 +925,7 @@ function renderLine(lineIndex) {
       label.addEventListener("click", onChordLabelClick);
       slotsRow.appendChild(label);
     } else if (s === total - 1) {
-      var addBtn = document.createElement("button");
+      let addBtn = document.createElement("button");
       addBtn.type = "button";
       addBtn.className = "song-line__slot song-line__slot--add";
       addBtn.textContent = "+";
@@ -934,7 +934,7 @@ function renderLine(lineIndex) {
       addBtn.addEventListener("click", onAddSlotClick);
       slotsRow.appendChild(addBtn);
     } else {
-      var slotBtn = document.createElement("button");
+      let slotBtn = document.createElement("button");
       slotBtn.type = "button";
       slotBtn.className = "song-line__slot";
       slotBtn.setAttribute("data-line", String(lineIndex));
@@ -945,7 +945,7 @@ function renderLine(lineIndex) {
   }
   wrap.appendChild(slotsRow);
 
-  var textEl = document.createElement("div");
+  let textEl = document.createElement("div");
   textEl.className = "song-line__text song-line__text--editable";
   textEl.textContent = text;
   textEl.setAttribute("data-line", String(lineIndex));
@@ -955,7 +955,7 @@ function renderLine(lineIndex) {
 }
 
 function reRenderLine(lineIndex) {
-  var old = songLinesBox.querySelector('[data-line="' + lineIndex + '"]');
+  let old = songLinesBox.querySelector('[data-line="' + lineIndex + '"]');
   if (!old) return;
   old.parentNode.replaceChild(renderLine(lineIndex), old);
 }
@@ -969,8 +969,8 @@ function readSlotIndex(el) {
 }
 
 function onAddSlotClick(e) {
-  var lineIndex = readLineIndex(e.currentTarget);
-  var slotIndex = readSlotIndex(e.currentTarget);
+  let lineIndex = readLineIndex(e.currentTarget);
+  let slotIndex = readSlotIndex(e.currentTarget);
   if (slotIndex > 0 && !getChordAtSlot(lineIndex, slotIndex - 1)) return;
   if (!songExtraSlots[lineIndex]) songExtraSlots[lineIndex] = 0;
   songExtraSlots[lineIndex]++;
@@ -984,9 +984,9 @@ function onSlotClick(e) {
 }
 
 function onChordLabelClick(e) {
-  var lineIndex = readLineIndex(e.currentTarget);
-  var slotIndex = readSlotIndex(e.currentTarget);
-  var chord = getChordAtSlot(lineIndex, slotIndex);
+  let lineIndex = readLineIndex(e.currentTarget);
+  let slotIndex = readSlotIndex(e.currentTarget);
+  let chord = getChordAtSlot(lineIndex, slotIndex);
   if (!chord) return;
   previewLineIndex = lineIndex;
   previewSlotIndex = slotIndex;
@@ -994,9 +994,9 @@ function onChordLabelClick(e) {
 }
 
 function onLineTextClick(e) {
-  var el = e.currentTarget;
-  var lineIndex = readLineIndex(el);
-  var input = document.createElement("input");
+  let el = e.currentTarget;
+  let lineIndex = readLineIndex(el);
+  let input = document.createElement("input");
   input.type = "text";
   input.className = "song-line__edit-input";
   input.value = songLines[lineIndex];
@@ -1019,11 +1019,11 @@ function updateSaveBtn() {
 }
 
 function songModalSave() {
-  var title = songTitleInput.value.trim();
-  var album = songAlbumInput.value.trim();
-  var artist = songArtistInput.value.trim();
+  let title = songTitleInput.value.trim();
+  let album = songAlbumInput.value.trim();
+  let artist = songArtistInput.value.trim();
   if (!title || !album || !artist || !hasAnyChord()) return;
-  var song = {
+  let song = {
     title: title,
     album: album,
     artist: artist,
@@ -1031,11 +1031,11 @@ function songModalSave() {
     lines: songLines.slice(),
     chords: []
   };
-  for (var i = 0; i < songChords.length; i++) {
+  for (let i = 0; i < songChords.length; i++) {
     song.chords.push(songChords[i] ? songChords[i].slice() : []);
   }
   if (songEditIndex !== null) {
-    var prev = loadSongs()[songEditIndex];
+    let prev = loadSongs()[songEditIndex];
     if (prev && prev.pendingSync) {
       song.pendingSync = true;
     }
@@ -1062,7 +1062,7 @@ function buildPickerDom() {
   pickerEl = document.createElement("div");
   pickerEl.className = "song-picker";
 
-  var searchRow = document.createElement("div");
+  let searchRow = document.createElement("div");
   searchRow.className = "song-picker__row";
 
   pickerSearchInput = document.createElement("input");
@@ -1073,7 +1073,7 @@ function buildPickerDom() {
   pickerSearchInput.addEventListener("input", pickerRefresh);
   searchRow.appendChild(pickerSearchInput);
 
-  var newChordBtn = document.createElement("button");
+  let newChordBtn = document.createElement("button");
   newChordBtn.type = "button";
   newChordBtn.className = "song-picker__add";
   newChordBtn.textContent = "+";
@@ -1116,14 +1116,14 @@ function pickerClose() {
 }
 
 function pickerRefresh() {
-  var query = pickerSearchInput.value.trim().toLowerCase();
-  var chords = loadChords();
+  let query = pickerSearchInput.value.trim().toLowerCase();
+  let chords = loadChords();
   pickerListEl.innerHTML = "";
-  var found = 0;
-  for (var i = 0; i < chords.length; i++) {
+  let found = 0;
+  for (let i = 0; i < chords.length; i++) {
     if (query && chords[i].name.toLowerCase().indexOf(query) === -1) continue;
     found++;
-    var item = document.createElement("button");
+    let item = document.createElement("button");
     item.type = "button";
     item.className = "song-picker__item";
     if (pickerSelectedName === chords[i].name) item.classList.add("is-selected");
@@ -1133,7 +1133,7 @@ function pickerRefresh() {
     pickerListEl.appendChild(item);
   }
   if (found === 0) {
-    var empty = document.createElement("p");
+    let empty = document.createElement("p");
     empty.className = "song-picker__empty";
     empty.textContent = "No hay acordes. Crea uno con +";
     pickerListEl.appendChild(empty);
@@ -1141,10 +1141,10 @@ function pickerRefresh() {
 }
 
 function pickerSelect(e) {
-  var name = e.currentTarget.getAttribute("data-name");
+  let name = e.currentTarget.getAttribute("data-name");
   pickerSelectedName = name;
-  var items = pickerListEl.querySelectorAll(".song-picker__item");
-  for (var i = 0; i < items.length; i++) {
+  let items = pickerListEl.querySelectorAll(".song-picker__item");
+  for (let i = 0; i < items.length; i++) {
     items[i].classList.toggle("is-selected", items[i].getAttribute("data-name") === name);
   }
   pickerConfirmBtn.textContent = "Confirmar " + name;
@@ -1173,7 +1173,7 @@ function buildPreviewDom() {
   previewEl = document.createElement("div");
   previewEl.className = "song-preview";
 
-  var closeBtn = document.createElement("button");
+  let closeBtn = document.createElement("button");
   closeBtn.type = "button";
   closeBtn.className = "song-preview__close";
   closeBtn.innerHTML = "&#10005;";
@@ -1188,7 +1188,7 @@ function buildPreviewDom() {
   previewActionsEl.className = "chord-modal__actions";
   previewActionsEl.style.marginTop = "0.75rem";
 
-  var removeBtn = document.createElement("button");
+  let removeBtn = document.createElement("button");
   removeBtn.type = "button";
   removeBtn.className = "chord-modal__btn chord-modal__btn--ghost";
   removeBtn.textContent = "Quitar";
@@ -1200,7 +1200,7 @@ function buildPreviewDom() {
   });
   previewActionsEl.appendChild(removeBtn);
 
-  var replaceBtn = document.createElement("button");
+  let replaceBtn = document.createElement("button");
   replaceBtn.type = "button";
   replaceBtn.className = "chord-modal__btn chord-modal__btn--primary";
   replaceBtn.textContent = "Reemplazar acorde";
@@ -1218,7 +1218,7 @@ function buildPreviewDom() {
 }
 
 function previewRenderDiagram(chordName) {
-  var chordData = findChordByName(chordName);
+  let chordData = findChordByName(chordName);
   previewDiagramEl.innerHTML = "";
   if (chordData) {
     renderChordDiagram(previewDiagramEl, {
@@ -1227,7 +1227,7 @@ function previewRenderDiagram(chordName) {
       startFret: computeChordDisplayStartFret(chordData.strings)
     });
   } else {
-    var fallback = document.createElement("p");
+    let fallback = document.createElement("p");
     fallback.style.textAlign = "center";
     fallback.style.fontSize = "1.5rem";
     fallback.style.fontWeight = "700";
@@ -1254,18 +1254,18 @@ function previewClose() {
 }
 
 function songDeleteFromView() {
-  var songs = loadSongs();
+  let songs = loadSongs();
   if (songEditIndex === null || songEditIndex < 0 || songEditIndex >= songs.length) return;
   songDeleteModalOpen(songs[songEditIndex].title, songEditIndex);
 }
 
-var songDeletePendingIndex = null;
+let songDeletePendingIndex = null;
 
 function songDeleteModalOpen(title, storageIndex) {
   songDeletePendingIndex = storageIndex;
-  var backdrop = document.getElementById("song-delete-modal-backdrop");
-  var dialog = document.getElementById("song-delete-modal");
-  var text = document.getElementById("song-delete-modal-text");
+  let backdrop = document.getElementById("song-delete-modal-backdrop");
+  let dialog = document.getElementById("song-delete-modal");
+  let text = document.getElementById("song-delete-modal-text");
   if (!backdrop || !dialog || !text) return;
   text.textContent = "¿Seguro que quieres eliminar " + title + "?";
   backdrop.classList.add("is-open");
@@ -1277,8 +1277,8 @@ function songDeleteModalOpen(title, storageIndex) {
 
 function songDeleteModalClose() {
   songDeletePendingIndex = null;
-  var backdrop = document.getElementById("song-delete-modal-backdrop");
-  var dialog = document.getElementById("song-delete-modal");
+  let backdrop = document.getElementById("song-delete-modal-backdrop");
+  let dialog = document.getElementById("song-delete-modal");
   if (!backdrop || !dialog) return;
   backdrop.classList.remove("is-open");
   backdrop.setAttribute("aria-hidden", "true");
@@ -1297,9 +1297,9 @@ function songDeleteModalConfirm() {
 }
 
 function songDeleteModalInit() {
-  var delBackdrop = document.getElementById("song-delete-modal-backdrop");
-  var btnCancel = document.getElementById("song-delete-cancel");
-  var btnConfirm = document.getElementById("song-delete-confirm");
+  let delBackdrop = document.getElementById("song-delete-modal-backdrop");
+  let btnCancel = document.getElementById("song-delete-cancel");
+  let btnConfirm = document.getElementById("song-delete-confirm");
 
   if (btnCancel) {
     btnCancel.addEventListener("click", songDeleteModalClose);
@@ -1313,9 +1313,9 @@ function songDeleteModalInit() {
 }
 
 function songModalEditFromView() {
-  var songs = loadSongs();
+  let songs = loadSongs();
   if (songEditIndex === null || songEditIndex < 0 || songEditIndex >= songs.length) return;
-  var song = songs[songEditIndex];
+  let song = songs[songEditIndex];
   songTitleInput.value = song.title;
   songAlbumInput.value = song.album || "";
   songArtistInput.value = song.artist;
@@ -1352,11 +1352,11 @@ function songRefreshLearnedBtn(learned) {
 
 function songToggleLearnedFromView() {
   if (songEditIndex === null) return;
-  var songs = loadSongs();
+  let songs = loadSongs();
   if (songEditIndex < 0 || songEditIndex >= songs.length) return;
-  var song = songs[songEditIndex];
-  var learned = !song.learned;
-  var updated = {
+  let song = songs[songEditIndex];
+  let learned = !song.learned;
+  let updated = {
     title: song.title,
     album: song.album || "",
     artist: song.artist || "",
@@ -1374,12 +1374,12 @@ function songToggleLearnedFromView() {
 }
 
 function songModalOpenView(index) {
-  var songs = loadSongs();
+  let songs = loadSongs();
   if (index < 0 || index >= songs.length) return;
   if (!songModalReady) return;
   chordyCloseFabMenu();
 
-  var song = songs[index];
+  let song = songs[index];
   songEditIndex = index;
 
   songModalStep1.hidden = true;
@@ -1391,17 +1391,17 @@ function songModalOpenView(index) {
   viewArtistEl.textContent = song.artist;
   viewLinesEl.innerHTML = "";
 
-  for (var i = 0; i < song.lines.length; i++) {
-    var lineText = song.lines[i];
-    var lineChords = song.chords[i] || [];
-    var lineDiv = document.createElement("div");
+  for (let i = 0; i < song.lines.length; i++) {
+    let lineText = song.lines[i];
+    let lineChords = song.chords[i] || [];
+    let lineDiv = document.createElement("div");
     lineDiv.className = "song-view__line";
 
     if (lineChords.length > 0) {
       lineDiv.appendChild(buildChordElements(lineText, lineChords));
     }
 
-    var textDiv = document.createElement("div");
+    let textDiv = document.createElement("div");
     textDiv.className = "song-view__text";
     textDiv.textContent = lineText;
     lineDiv.appendChild(textDiv);
@@ -1413,16 +1413,16 @@ function songModalOpenView(index) {
 }
 
 function buildChordElements(text, chords) {
-  var row = document.createElement("div");
+  let row = document.createElement("div");
   row.className = "song-view__chords";
-  var sorted = chords.slice().sort(function (a, b) {
+  let sorted = chords.slice().sort(function (a, b) {
     return a.pos - b.pos;
   });
-  var cursor = 0;
-  for (var i = 0; i < sorted.length; i++) {
-    var gap = sorted[i].pos - cursor;
+  let cursor = 0;
+  for (let i = 0; i < sorted.length; i++) {
+    let gap = sorted[i].pos - cursor;
     if (gap < 1 && i > 0) gap = 1;
-    var span = document.createElement("span");
+    let span = document.createElement("span");
     span.className = "song-view__chord-name";
     span.textContent = sorted[i].name;
     span.style.cursor = "pointer";
@@ -1442,8 +1442,8 @@ function initSongModal() {
   songDeleteModalInit();
   window.addEventListener("offline", songOnBrowserOffline);
   window.addEventListener("online", songOnBrowserOnline);
-  var btns = document.querySelectorAll(".js-fab-open-song-modal");
-  for (var i = 0; i < btns.length; i++) {
+  let btns = document.querySelectorAll(".js-fab-open-song-modal");
+  for (let i = 0; i < btns.length; i++) {
     btns[i].addEventListener("click", function (e) {
       e.preventDefault();
       songModalOpen();
@@ -1458,9 +1458,9 @@ function initSongModal() {
 chordyOnReady(initSongModal);
 
 
-var currentSortMode = "az";
+let currentSortMode = "az";
 
-var SORT_LABELS = {
+let SORT_LABELS = {
   az: "A · Z",
   za: "Z · A",
   "artist-az": "Por artista (A-Z)",
@@ -1468,13 +1468,13 @@ var SORT_LABELS = {
 };
 
 function initSongSort() {
-  var dropdown = document.getElementById("song-sort");
+  let dropdown = document.getElementById("song-sort");
   if (!dropdown) return;
 
-  var trigger = document.getElementById("song-sort-trigger");
-  var menu = document.getElementById("song-sort-list");
-  var label = document.getElementById("song-sort-label");
-  var options = menu ? menu.querySelectorAll(".sort-dropdown__option") : [];
+  let trigger = document.getElementById("song-sort-trigger");
+  let menu = document.getElementById("song-sort-list");
+  let label = document.getElementById("song-sort-label");
+  let options = menu ? menu.querySelectorAll(".sort-dropdown__option") : [];
   if (!trigger || !menu || !label || !options.length) return;
 
   function setOpen(isOpen) {
@@ -1487,8 +1487,8 @@ function initSongSort() {
     if (!SORT_LABELS[value]) return;
     currentSortMode = value;
     label.textContent = SORT_LABELS[value];
-    for (var i = 0; i < options.length; i++) {
-      var selected = options[i].getAttribute("data-value") === value;
+    for (let i = 0; i < options.length; i++) {
+      let selected = options[i].getAttribute("data-value") === value;
       options[i].classList.toggle("is-selected", selected);
       options[i].setAttribute("aria-selected", selected ? "true" : "false");
     }
@@ -1500,7 +1500,7 @@ function initSongSort() {
     setOpen(!dropdown.classList.contains("is-open"));
   });
 
-  for (var o = 0; o < options.length; o++) {
+  for (let o = 0; o < options.length; o++) {
     options[o].addEventListener("click", function (e) {
       selectValue(e.currentTarget.getAttribute("data-value"));
     });
@@ -1520,8 +1520,8 @@ function initSongSort() {
 }
 
 function compareStrings(a, b) {
-  var ta = String(a).toLowerCase();
-  var tb = String(b).toLowerCase();
+  let ta = String(a).toLowerCase();
+  let tb = String(b).toLowerCase();
   if (ta < tb) return -1;
   if (ta > tb) return 1;
   return 0;
@@ -1536,7 +1536,7 @@ function songCardEscape(text) {
 }
 
 function buildSongCard(storageIndex, song) {
-  var cover = "";
+  let cover = "";
   if (song.albumImage) {
     cover =
       '<img class="card__cover" src="' +
@@ -1548,15 +1548,15 @@ function buildSongCard(storageIndex, song) {
       '<img class="card__cover-logo" src="logo.png" alt="" width="52" height="52" decoding="async">' +
       "</div>";
   }
-  var album = song.album || "";
-  var line1 =
+  let album = song.album || "";
+  let line1 =
     songCardEscape(song.title) +
     ' <span class="card__sep">|</span> ' +
     songCardEscape(album);
-  var line2 = songCardEscape(song.artist || "");
-  var syncBtn = "";
+  let line2 = songCardEscape(song.artist || "");
+  let syncBtn = "";
   if (song.pendingSync) {
-    var syncIcon = chordyIcon("arrow-repeat", "card__sync-btn__icon");
+    let syncIcon = chordyIcon("arrow-repeat", "card__sync-btn__icon");
     syncBtn =
       '<button type="button" class="card__sync-btn js-song-sync" data-song-idx="' +
       storageIndex +
@@ -1564,7 +1564,7 @@ function buildSongCard(storageIndex, song) {
       syncIcon +
       "<span>Sincronizar</span></button>";
   }
-  var learnedClass = song.learned ? " card--song-learned" : "";
+  let learnedClass = song.learned ? " card--song-learned" : "";
   return (
     '<article class="card card--song js-song-card' +
     learnedClass +
@@ -1587,8 +1587,8 @@ function buildSongCard(storageIndex, song) {
 }
 
 function bindSongCards() {
-  var allCards = document.querySelectorAll(".js-song-card");
-  for (var c = 0; c < allCards.length; c++) {
+  let allCards = document.querySelectorAll(".js-song-card");
+  for (let c = 0; c < allCards.length; c++) {
     allCards[c].addEventListener("click", onSongCardClick);
   }
   bindSongSyncButtons();
@@ -1599,16 +1599,16 @@ function compareStringsReverse(a, b) {
 }
 
 function buildSongArtistGroupHtml(artistName, entries, songs) {
-  var sortedEntries = entries.slice().sort(function (a, b) {
+  let sortedEntries = entries.slice().sort(function (a, b) {
     return compareStrings(a.title, b.title);
   });
-  var html = '<section class="song-list-group">';
+  let html = '<section class="song-list-group">';
   html +=
     '<h2 class="song-list-group__label">' +
     songCardEscape(artistName || "Sin artista") +
     "</h2>";
   html += '<div class="song-list-group__items">';
-  for (var t = 0; t < sortedEntries.length; t++) {
+  for (let t = 0; t < sortedEntries.length; t++) {
     html += buildSongCard(sortedEntries[t].idx, songs[sortedEntries[t].idx]);
   }
   html += "</div></section>";
@@ -1616,36 +1616,36 @@ function buildSongArtistGroupHtml(artistName, entries, songs) {
 }
 
 function buildSongLists() {
-  var listEl = document.getElementById("list-songs");
+  let listEl = document.getElementById("list-songs");
   if (!listEl) return;
 
-  var songs = loadSongs();
+  let songs = loadSongs();
 
   if (songs.length === 0) {
     listEl.innerHTML = '<p class="empty-state">No hay canciones todavía</p>';
     return;
   }
 
-  var indexed = [];
-  for (var i = 0; i < songs.length; i++) {
+  let indexed = [];
+  for (let i = 0; i < songs.length; i++) {
     indexed.push({ idx: i, title: songs[i].title, artist: songs[i].artist || "" });
   }
 
   if (currentSortMode === "artist-az" || currentSortMode === "artist-za") {
-    var byArtist = {};
-    for (var j = 0; j < indexed.length; j++) {
-      var artistKey = indexed[j].artist || "Sin artista";
+    let byArtist = {};
+    for (let j = 0; j < indexed.length; j++) {
+      let artistKey = indexed[j].artist || "Sin artista";
       if (!byArtist[artistKey]) byArtist[artistKey] = [];
       byArtist[artistKey].push(indexed[j]);
     }
 
-    var artistNames = Object.keys(byArtist);
+    let artistNames = Object.keys(byArtist);
     artistNames.sort(
       currentSortMode === "artist-za" ? compareStringsReverse : compareStrings
     );
 
-    var artistHtml = "";
-    for (var k = 0; k < artistNames.length; k++) {
+    let artistHtml = "";
+    for (let k = 0; k < artistNames.length; k++) {
       artistHtml += buildSongArtistGroupHtml(
         artistNames[k],
         byArtist[artistNames[k]],
@@ -1658,12 +1658,12 @@ function buildSongLists() {
   }
 
   indexed.sort(function (a, b) {
-    var cmp = compareStrings(a.title, b.title);
+    let cmp = compareStrings(a.title, b.title);
     return currentSortMode === "za" ? -cmp : cmp;
   });
 
-  var html = "";
-  for (var a = 0; a < indexed.length; a++) {
+  let html = "";
+  for (let a = 0; a < indexed.length; a++) {
     html += buildSongCard(indexed[a].idx, songs[indexed[a].idx]);
   }
   listEl.innerHTML = html;
@@ -1672,7 +1672,7 @@ function buildSongLists() {
 
 function onSongCardClick(e) {
   if (e.target.closest(".js-song-sync")) return;
-  var idx = parseInt(e.currentTarget.getAttribute("data-song-idx"), 10);
+  let idx = parseInt(e.currentTarget.getAttribute("data-song-idx"), 10);
   if (isNaN(idx)) return;
   songModalOpenView(idx);
 }

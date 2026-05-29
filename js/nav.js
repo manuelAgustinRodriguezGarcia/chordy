@@ -1,9 +1,9 @@
 (function () {
-  var STORAGE_KEY = "chordy_theme";
+  let STORAGE_KEY = "chordy_theme";
 
   function getStoredTheme() {
     try {
-      var stored = localStorage.getItem(STORAGE_KEY);
+      let stored = localStorage.getItem(STORAGE_KEY);
       if (stored === "dark" || stored === "light") {
         return stored;
       }
@@ -17,20 +17,20 @@
   }
 
   function updateMetaThemeColor(theme) {
-    var meta = document.querySelector('meta[name="theme-color"]');
+    let meta = document.querySelector('meta[name="theme-color"]');
     if (!meta) return;
     meta.setAttribute("content", theme === "dark" ? "#4c1d95" : "#f5f3ff");
   }
 
   function refreshThemeIcon(btn, theme) {
     if (!btn) return;
-    var iconName = theme === "dark" ? "moon" : "sun";
+    let iconName = theme === "dark" ? "moon" : "sun";
     btn.innerHTML = chordyIcon(iconName, "theme-toggle__icon");
   }
 
   function updateToggleButton(btn, theme) {
     if (!btn) return;
-    var isDark = theme === "dark";
+    let isDark = theme === "dark";
     btn.setAttribute("aria-pressed", isDark ? "true" : "false");
     refreshThemeIcon(btn, theme);
   }
@@ -45,7 +45,7 @@
   }
 
   function toggleTheme() {
-    var current =
+    let current =
       document.documentElement.getAttribute("data-theme") === "dark"
         ? "dark"
         : "light";
@@ -53,8 +53,8 @@
   }
 
   function initThemeToggle() {
-    var btn = document.querySelector(".theme-toggle");
-    var theme = getStoredTheme();
+    let btn = document.querySelector(".theme-toggle");
+    let theme = getStoredTheme();
     applyTheme(theme);
     updateToggleButton(btn, theme);
     if (!btn) return;
@@ -62,14 +62,14 @@
   }
 
   function updateConnectionStatus() {
-    var btn = document.querySelector(".connection-status");
+    let btn = document.querySelector(".connection-status");
     if (!btn) return;
-    var online = navigator.onLine;
+    let online = navigator.onLine;
     btn.setAttribute("aria-label", online ? "Con conexión" : "Sin conexión");
     btn.setAttribute("title", online ? "Con conexión" : "Sin conexión");
     btn.classList.toggle("is-offline", !online);
     btn.classList.toggle("is-online", online);
-    var iconName = online ? "wifi" : "wifi-off";
+    let iconName = online ? "wifi" : "wifi-off";
     btn.innerHTML = chordyIcon(iconName, "theme-toggle__icon");
   }
 
@@ -80,11 +80,11 @@
   }
 
   function initNav() {
-    var page = document.body.getAttribute("data-page");
+    let page = document.body.getAttribute("data-page");
     if (!page) return;
-    var links = document.querySelectorAll(".bottom-nav__link");
-    for (var i = 0; i < links.length; i++) {
-      var link = links[i];
+    let links = document.querySelectorAll(".bottom-nav__link");
+    for (let i = 0; i < links.length; i++) {
+      let link = links[i];
       if (link.getAttribute("data-nav") === page) {
         link.classList.add("is-active");
         link.setAttribute("aria-current", "page");

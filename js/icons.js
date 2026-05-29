@@ -1,4 +1,4 @@
-var CHORDY_BI_ICONS = {
+let CHORDY_BI_ICONS = {
   sun: "bi-sun",
   moon: "bi-moon",
   "list-music": "bi-music-note-list",
@@ -13,8 +13,8 @@ var CHORDY_BI_ICONS = {
 };
 
 function chordyIcon(name, className) {
-  var bi = CHORDY_BI_ICONS[name] || "bi-circle";
-  var cls = "bi " + bi + (className ? " " + className : "");
+  let bi = CHORDY_BI_ICONS[name] || "bi-circle";
+  let cls = "bi " + bi + (className ? " " + className : "");
   return '<i class="' + cls + '" aria-hidden="true"></i>';
 }
 

@@ -9,8 +9,8 @@
     });
   }
 
-  var deferredPrompt = null;
-  var installBtn = null;
+  let deferredPrompt = null;
+  let installBtn = null;
 
   function isInstalled() {
     return (

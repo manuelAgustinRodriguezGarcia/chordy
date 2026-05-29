@@ -1,24 +1,24 @@
-﻿var CHORD_DIAGRAM_MAX_START_FRET = 19;
-var CHORD_DIAGRAM_MAX_ABSOLUTE_FRET = CHORD_DIAGRAM_MAX_START_FRET + 4;
+﻿let CHORD_DIAGRAM_MAX_START_FRET = 19;
+let CHORD_DIAGRAM_MAX_ABSOLUTE_FRET = CHORD_DIAGRAM_MAX_START_FRET + 4;
 
 function normalizeStringValue(value) {
   if (value === "none" || value === "air") return value;
-  var n = parseInt(value, 10);
+  let n = parseInt(value, 10);
   if (isNaN(n)) return "air";
   if (n >= 1 && n <= CHORD_DIAGRAM_MAX_ABSOLUTE_FRET) return n;
   return "air";
 }
 
 function computeChordDisplayStartFret(strings) {
-  var nums = [];
-  for (var i = 0; i < strings.length; i++) {
-    var v = strings[i];
+  let nums = [];
+  for (let i = 0; i < strings.length; i++) {
+    let v = strings[i];
     if (typeof v === "number" && v >= 1 && v <= CHORD_DIAGRAM_MAX_ABSOLUTE_FRET) {
       nums.push(v);
     }
   }
   if (nums.length === 0) return 1;
-  var hi = Math.max.apply(null, nums);
+  let hi = Math.max.apply(null, nums);
   if (hi <= 5) return 1;
   return Math.max(1, Math.min(CHORD_DIAGRAM_MAX_START_FRET, hi - 4));
 }
@@ -36,7 +36,7 @@ function dotCenterTopPercent(fretNumber) {
 }
 
 function chordDiagramChevronSvg(direction) {
-  var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("width", "14");
   svg.setAttribute("height", "14");
   svg.setAttribute("viewBox", "0 0 24 24");
@@ -45,24 +45,24 @@ function chordDiagramChevronSvg(direction) {
   svg.setAttribute("stroke-width", "2.25");
   svg.setAttribute("stroke-linecap", "round");
   svg.setAttribute("stroke-linejoin", "round");
-  var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
   path.setAttribute("d", direction === "up" ? "M6 15l6-6 6 6" : "M6 9l6 6 6-6");
   svg.appendChild(path);
   return svg;
 }
 
 function buildDiagramGutter(startFret, hasFretNav) {
-  var gutter = document.createElement("div");
+  let gutter = document.createElement("div");
   gutter.className = "chord-diagram__gutter";
 
-  var gutterTop = document.createElement("div");
+  let gutterTop = document.createElement("div");
   gutterTop.className = "chord-diagram__gutter-top";
   gutterTop.setAttribute("aria-hidden", "true");
   if (startFret > 1) gutterTop.classList.add("chord-diagram__gutter-top--no-nut");
   gutter.appendChild(gutterTop);
 
   if (hasFretNav && startFret > 1) {
-    var navUp = document.createElement("button");
+    let navUp = document.createElement("button");
     navUp.type = "button";
     navUp.className = "chord-diagram__gutter-nav chord-diagram__gutter-nav--up";
     navUp.setAttribute("data-fret-nav", "up");
@@ -71,10 +71,10 @@ function buildDiagramGutter(startFret, hasFretNav) {
     gutter.appendChild(navUp);
   }
 
-  var gutterMid = document.createElement("div");
+  let gutterMid = document.createElement("div");
   gutterMid.className = "chord-diagram__gutter-mid";
-  for (var f = 0; f < 5; f++) {
-    var label = document.createElement("div");
+  for (let f = 0; f < 5; f++) {
+    let label = document.createElement("div");
     label.className = "chord-diagram__gutter-label";
     label.textContent = String(startFret + f);
     gutterMid.appendChild(label);
@@ -82,7 +82,7 @@ function buildDiagramGutter(startFret, hasFretNav) {
   gutter.appendChild(gutterMid);
 
   if (hasFretNav) {
-    var navDown = document.createElement("button");
+    let navDown = document.createElement("button");
     navDown.type = "button";
     navDown.className = "chord-diagram__gutter-nav chord-diagram__gutter-nav--down";
     navDown.setAttribute("data-fret-nav", "down");
@@ -92,7 +92,7 @@ function buildDiagramGutter(startFret, hasFretNav) {
     gutter.appendChild(navDown);
   }
 
-  var gutterBottom = document.createElement("div");
+  let gutterBottom = document.createElement("div");
   gutterBottom.className = "chord-diagram__gutter-bottom";
   gutterBottom.setAttribute("aria-hidden", "true");
   gutter.appendChild(gutterBottom);
@@ -101,43 +101,43 @@ function buildDiagramGutter(startFret, hasFretNav) {
 }
 
 function buildDotsAndBarres(strings, startFret) {
-  var layer = document.createElement("div");
+  let layer = document.createElement("div");
   layer.className = "chord-diagram__dots-layer";
 
-  var fretGroups = {};
-  for (var s = 0; s < 6; s++) {
+  let fretGroups = {};
+  for (let s = 0; s < 6; s++) {
     if (typeof strings[s] !== "number") continue;
-    var row = strings[s] - startFret + 1;
+    let row = strings[s] - startFret + 1;
     if (row >= 1 && row <= 5) {
       if (!fretGroups[row]) fretGroups[row] = [];
       fretGroups[row].push(s);
     }
   }
 
-  var barredPositions = {};
+  let barredPositions = {};
 
-  for (var r in fretGroups) {
-    var group = fretGroups[r];
-    var span = group[group.length - 1] - group[0];
+  for (let r in fretGroups) {
+    let group = fretGroups[r];
+    let span = group[group.length - 1] - group[0];
     if (group.length >= 2 && span >= 3) {
-      var bar = document.createElement("span");
+      let bar = document.createElement("span");
       bar.className = "chord-diagram__bar";
       bar.style.top = dotCenterTopPercent(parseInt(r, 10));
       bar.style.left = "calc(" + stringCenterLeftPercent(group[0]) + " - 0.46rem)";
       bar.style.width = "calc(" + (span / 6 * 100) + "% + 0.92rem)";
       layer.appendChild(bar);
-      for (var b = 0; b < group.length; b++) {
+      for (let b = 0; b < group.length; b++) {
         barredPositions[group[b] + "," + r] = true;
       }
     }
   }
 
-  for (var d = 0; d < 6; d++) {
+  for (let d = 0; d < 6; d++) {
     if (typeof strings[d] !== "number") continue;
-    var dotRow = strings[d] - startFret + 1;
+    let dotRow = strings[d] - startFret + 1;
     if (dotRow < 1 || dotRow > 5) continue;
     if (barredPositions[d + "," + dotRow]) continue;
-    var dot = document.createElement("span");
+    let dot = document.createElement("span");
     dot.className = "chord-diagram__dot";
     dot.style.left = stringCenterLeftPercent(d);
     dot.style.top = dotCenterTopPercent(dotRow);
@@ -148,10 +148,10 @@ function buildDotsAndBarres(strings, startFret) {
 }
 
 function buildMutesRow(strings) {
-  var mutes = document.createElement("div");
+  let mutes = document.createElement("div");
   mutes.className = "chord-diagram__mutes";
-  for (var i = 0; i < 6; i++) {
-    var cell = document.createElement("div");
+  for (let i = 0; i < 6; i++) {
+    let cell = document.createElement("div");
     cell.className = "chord-diagram__mute";
     if (strings[i] === "none") {
       cell.textContent = "X";
@@ -171,63 +171,63 @@ function renderChordDiagram(container, chord) {
   }
   container.innerHTML = "";
 
-  var strings = [];
-  for (var i = 0; i < 6; i++) {
+  let strings = [];
+  for (let i = 0; i < 6; i++) {
     strings.push(normalizeStringValue(chord.strings[i]));
   }
 
-  var startFret = typeof chord.startFret === "number"
+  let startFret = typeof chord.startFret === "number"
     ? chord.startFret
     : computeChordDisplayStartFret(chord.strings);
   startFret = Math.max(1, Math.min(CHORD_DIAGRAM_MAX_START_FRET, startFret));
 
-  var root = document.createElement("div");
+  let root = document.createElement("div");
   root.className = "chord-diagram";
 
   if (chord.nameTitleSlot) {
     chord.nameTitleSlot.classList.add("chord-diagram__name-field");
     root.appendChild(chord.nameTitleSlot);
   } else {
-    var title = document.createElement("div");
+    let title = document.createElement("div");
     title.className = "chord-diagram__title";
     title.textContent = chord.name;
     root.appendChild(title);
   }
 
-  var board = document.createElement("div");
+  let board = document.createElement("div");
   board.className = "chord-diagram__board";
 
   board.appendChild(buildDiagramGutter(startFret, chord.fretNav));
 
-  var fretArea = document.createElement("div");
+  let fretArea = document.createElement("div");
   fretArea.className = "chord-diagram__fret-area";
 
-  var nut = document.createElement("div");
+  let nut = document.createElement("div");
   nut.className = "chord-diagram__nut";
   nut.setAttribute("aria-hidden", "true");
   if (startFret > 1) nut.classList.add("chord-diagram__nut--hidden");
   fretArea.appendChild(nut);
 
   if (chord.fretNav && startFret > 1) {
-    var spacerUp = document.createElement("div");
+    let spacerUp = document.createElement("div");
     spacerUp.className = "chord-diagram__fret-nav-spacer chord-diagram__fret-nav-spacer--up";
     spacerUp.setAttribute("aria-hidden", "true");
     fretArea.appendChild(spacerUp);
   }
 
-  var canvas = document.createElement("div");
+  let canvas = document.createElement("div");
   canvas.className = "chord-diagram__canvas";
 
-  for (var vs = 0; vs < 6; vs++) {
-    var vLine = document.createElement("div");
+  for (let vs = 0; vs < 6; vs++) {
+    let vLine = document.createElement("div");
     vLine.className = "chord-diagram__v-line";
     vLine.setAttribute("aria-hidden", "true");
     vLine.style.left = stringCenterLeftPercent(vs);
     canvas.appendChild(vLine);
   }
 
-  for (var hf = 1; hf <= 5; hf++) {
-    var hLine = document.createElement("div");
+  for (let hf = 1; hf <= 5; hf++) {
+    let hLine = document.createElement("div");
     hLine.className = "chord-diagram__h-line";
     hLine.setAttribute("aria-hidden", "true");
     hLine.style.top = fretLineTopPercent(hf);
@@ -238,7 +238,7 @@ function renderChordDiagram(container, chord) {
   fretArea.appendChild(canvas);
 
   if (chord.fretNav) {
-    var spacerDown = document.createElement("div");
+    let spacerDown = document.createElement("div");
     spacerDown.className = "chord-diagram__fret-nav-spacer chord-diagram__fret-nav-spacer--down";
     spacerDown.setAttribute("aria-hidden", "true");
     fretArea.appendChild(spacerDown);
@@ -251,16 +251,16 @@ function renderChordDiagram(container, chord) {
 }
 
 
-var chordModalBackdrop = null;
-var chordModalDialog = null;
-var chordModalNameInput = null;
-var chordModalPreview = null;
-var chordModalEscapeHandler = null;
-var chordModalBuilt = false;
-var chordModalStrings = ["air", "air", "air", "air", "air", "air"];
-var chordModalStartFret = 1;
-var chordModalEditIndex = null;
-var chordModalTitleEl = null;
+let chordModalBackdrop = null;
+let chordModalDialog = null;
+let chordModalNameInput = null;
+let chordModalPreview = null;
+let chordModalEscapeHandler = null;
+let chordModalBuilt = false;
+let chordModalStrings = ["air", "air", "air", "air", "air", "air"];
+let chordModalStartFret = 1;
+let chordModalEditIndex = null;
+let chordModalTitleEl = null;
 
 function chordModalStringLeftPercent(index) {
   return ((index + 0.5) / 6) * 100 + "%";
@@ -274,20 +274,20 @@ function chordModalBuildPreviewTargets() {
   if (!chordModalPreview) {
     return;
   }
-  var canvas = chordModalPreview.querySelector(".chord-diagram__canvas");
+  let canvas = chordModalPreview.querySelector(".chord-diagram__canvas");
   if (!canvas) {
     return;
   }
-  var existing = canvas.querySelector(".chord-modal__canvas-picks");
+  let existing = canvas.querySelector(".chord-modal__canvas-picks");
   if (existing) {
     existing.remove();
   }
-  var layer = document.createElement("div");
+  let layer = document.createElement("div");
   layer.className = "chord-modal__canvas-picks";
-  for (var s = 0; s < 6; s++) {
-    for (var slot = 1; slot <= 5; slot++) {
-      var absFret = chordModalStartFret + slot - 1;
-      var pick = document.createElement("button");
+  for (let s = 0; s < 6; s++) {
+    for (let slot = 1; slot <= 5; slot++) {
+      let absFret = chordModalStartFret + slot - 1;
+      let pick = document.createElement("button");
       pick.type = "button";
       pick.className = "chord-modal__pick";
       if (chordModalStrings[s] === absFret) {
@@ -301,12 +301,12 @@ function chordModalBuildPreviewTargets() {
     }
   }
   layer.addEventListener("click", function (event) {
-    var target = event.target;
+    let target = event.target;
     if (target.nodeName !== "BUTTON") {
       return;
     }
-    var s = parseInt(target.getAttribute("data-string"), 10);
-    var f = parseInt(target.getAttribute("data-fret"), 10);
+    let s = parseInt(target.getAttribute("data-string"), 10);
+    let f = parseInt(target.getAttribute("data-fret"), 10);
     if (isNaN(s) || isNaN(f)) {
       return;
     }
@@ -323,14 +323,14 @@ function chordModalSyncModes() {
   if (!chordModalPreview) {
     return;
   }
-  var buttons = chordModalPreview.querySelectorAll(".chord-modal__mode-btn");
-  for (var i = 0; i < buttons.length; i++) {
-    var btn = buttons[i];
-    var s = parseInt(btn.getAttribute("data-string"), 10);
+  let buttons = chordModalPreview.querySelectorAll(".chord-modal__mode-btn");
+  for (let i = 0; i < buttons.length; i++) {
+    let btn = buttons[i];
+    let s = parseInt(btn.getAttribute("data-string"), 10);
     if (isNaN(s)) {
       continue;
     }
-    var isNone = chordModalStrings[s] === "none";
+    let isNone = chordModalStrings[s] === "none";
     btn.classList.toggle("is-active", isNone);
     btn.textContent = isNone ? "X" : "O";
   }
@@ -340,18 +340,18 @@ function chordModalBuildInlineModes() {
   if (!chordModalPreview) {
     return;
   }
-  var fretArea = chordModalPreview.querySelector(".chord-diagram__fret-area");
+  let fretArea = chordModalPreview.querySelector(".chord-diagram__fret-area");
   if (!fretArea) {
     return;
   }
-  var existing = fretArea.querySelector(".chord-modal__inline-modes");
+  let existing = fretArea.querySelector(".chord-modal__inline-modes");
   if (existing) {
     existing.remove();
   }
-  var row = document.createElement("div");
+  let row = document.createElement("div");
   row.className = "chord-modal__inline-modes";
-  for (var s = 0; s < 6; s++) {
-    var btn = document.createElement("button");
+  for (let s = 0; s < 6; s++) {
+    let btn = document.createElement("button");
     btn.type = "button";
     btn.className = "chord-modal__mode-btn";
     btn.setAttribute("data-string", String(s));
@@ -359,11 +359,11 @@ function chordModalBuildInlineModes() {
     row.appendChild(btn);
   }
   row.addEventListener("click", function (event) {
-    var target = event.target;
+    let target = event.target;
     if (target.nodeName !== "BUTTON") {
       return;
     }
-    var s = parseInt(target.getAttribute("data-string"), 10);
+    let s = parseInt(target.getAttribute("data-string"), 10);
     if (isNaN(s)) {
       return;
     }
@@ -383,7 +383,7 @@ function chordModalSetString(index, value) {
 }
 
 function chordModalResetStrings() {
-  for (var i = 0; i < 6; i++) {
+  for (let i = 0; i < 6; i++) {
     chordModalStrings[i] = "air";
   }
 }
@@ -416,9 +416,9 @@ function chordModalEscapeKey(event) {
 
 function chordModalUpdatePreview() {
   if (!chordModalPreview) return;
-  var hasFocus = chordModalNameInput && document.activeElement === chordModalNameInput;
-  var selStart = hasFocus ? chordModalNameInput.selectionStart : null;
-  var selEnd = hasFocus ? chordModalNameInput.selectionEnd : null;
+  let hasFocus = chordModalNameInput && document.activeElement === chordModalNameInput;
+  let selStart = hasFocus ? chordModalNameInput.selectionStart : null;
+  let selEnd = hasFocus ? chordModalNameInput.selectionEnd : null;
   renderChordDiagram(chordModalPreview, {
     nameTitleSlot: chordModalNameInput,
     strings: chordModalStrings.slice(),
@@ -437,11 +437,11 @@ function chordModalUpdatePreview() {
 }
 
 function chordModalSave() {
-  var name = chordModalNameInput ? chordModalNameInput.value.trim() : "";
+  let name = chordModalNameInput ? chordModalNameInput.value.trim() : "";
   if (!name) {
     return;
   }
-  var payload = { name: name, strings: chordModalStrings.slice() };
+  let payload = { name: name, strings: chordModalStrings.slice() };
   if (chordModalEditIndex !== null) {
     updateChordAt(chordModalEditIndex, payload);
   } else {
@@ -491,7 +491,7 @@ function chordModalBuildDom() {
   chordModalDialog.setAttribute("aria-labelledby", "chord-modal-title");
   chordModalDialog.setAttribute("aria-hidden", "true");
 
-  var title = document.createElement("h2");
+  let title = document.createElement("h2");
   title.id = "chord-modal-title";
   title.className = "chord-modal__title";
   title.textContent = "Agregar nuevo acorde";
@@ -511,24 +511,24 @@ function chordModalBuildDom() {
   chordModalPreview.className = "chord-modal__preview";
   chordModalDialog.appendChild(chordModalPreview);
 
-  var legend = document.createElement("p");
+  let legend = document.createElement("p");
   legend.className = "chord-modal__legend";
   legend.innerHTML =
     '<span class="chord-modal__legend-mark">O</span>: "cuerda al aire", suena pero sin presionar ningún traste<br>' +
     '<span class="chord-modal__legend-mark">X</span>: "cuerda muteada", no debe ser tocada esta cuerda.';
   chordModalDialog.appendChild(legend);
 
-  var actions = document.createElement("div");
+  let actions = document.createElement("div");
   actions.className = "chord-modal__actions";
 
-  var btnCancel = document.createElement("button");
+  let btnCancel = document.createElement("button");
   btnCancel.type = "button";
   btnCancel.className = "chord-modal__btn chord-modal__btn--ghost";
   btnCancel.textContent = "Cancelar";
   btnCancel.addEventListener("click", chordModalClose);
   actions.appendChild(btnCancel);
 
-  var btnSave = document.createElement("button");
+  let btnSave = document.createElement("button");
   btnSave.type = "button";
   btnSave.className = "chord-modal__btn chord-modal__btn--primary";
   btnSave.textContent = "Guardar";
@@ -545,14 +545,14 @@ function chordModalBuildDom() {
   chordModalNameInput.addEventListener("input", chordModalUpdatePreview);
 
   chordModalPreview.addEventListener("click", function (event) {
-    var btn = event.target.closest("[data-fret-nav]");
+    let btn = event.target.closest("[data-fret-nav]");
     if (!btn || !chordModalPreview.contains(btn)) {
       return;
     }
     if (btn.disabled) {
       return;
     }
-    var dir = btn.getAttribute("data-fret-nav");
+    let dir = btn.getAttribute("data-fret-nav");
     if (dir === "up") {
       chordModalStartFret -= 1;
     } else if (dir === "down") {
@@ -578,8 +578,8 @@ function chordModalOnFabOpenClick(event) {
 
 function initChordModal() {
   chordModalBuildDom();
-  var openButtons = document.querySelectorAll(".js-fab-open-chord-modal");
-  for (var i = 0; i < openButtons.length; i++) {
+  let openButtons = document.querySelectorAll(".js-fab-open-chord-modal");
+  for (let i = 0; i < openButtons.length; i++) {
     openButtons[i].addEventListener("click", chordModalOnFabOpenClick);
   }
   if (
@@ -598,7 +598,7 @@ function chordModalOpenForEdit(storageIndex, chord) {
   if (!chordModalBuilt || !chord || !chord.strings || chord.strings.length !== 6) return;
   chordModalEditIndex = storageIndex;
   if (chordModalTitleEl) chordModalTitleEl.textContent = "Editar acorde";
-  for (var i = 0; i < 6; i++) {
+  for (let i = 0; i < 6; i++) {
     chordModalStrings[i] = normalizeStringValue(chord.strings[i]);
   }
   chordModalStartFret = computeChordDisplayStartFret(chord.strings);
@@ -615,17 +615,17 @@ function chordSearchNormalize(s) {
 }
 
 function chordCompareNames(a, b) {
-  var ta = String(a).toLowerCase();
-  var tb = String(b).toLowerCase();
+  let ta = String(a).toLowerCase();
+  let tb = String(b).toLowerCase();
   if (ta < tb) return -1;
   if (ta > tb) return 1;
   return 0;
 }
 
 function chordListPrepareDecorated() {
-  var raw = loadChords();
-  var decorated = [];
-  for (var i = 0; i < raw.length; i++) {
+  let raw = loadChords();
+  let decorated = [];
+  for (let i = 0; i < raw.length; i++) {
     decorated.push({ chord: raw[i], storageIndex: i });
   }
   decorated.sort(function (a, b) {
@@ -638,9 +638,9 @@ function chordListFilterDecorated(decorated, queryNorm) {
   if (!queryNorm) {
     return decorated;
   }
-  var out = [];
-  for (var i = 0; i < decorated.length; i++) {
-    var item = decorated[i];
+  let out = [];
+  for (let i = 0; i < decorated.length; i++) {
+    let item = decorated[i];
     if (chordSearchNormalize(item.chord.name).indexOf(queryNorm) !== -1) {
       out.push(item);
     }
@@ -648,13 +648,13 @@ function chordListFilterDecorated(decorated, queryNorm) {
   return out;
 }
 
-var chordDeletePendingIndex = null;
+let chordDeletePendingIndex = null;
 
 function chordDeleteModalOpen(name, storageIndex) {
   chordDeletePendingIndex = storageIndex;
-  var backdrop = document.getElementById("chord-delete-modal-backdrop");
-  var dialog = document.getElementById("chord-delete-modal");
-  var text = document.getElementById("chord-delete-modal-text");
+  let backdrop = document.getElementById("chord-delete-modal-backdrop");
+  let dialog = document.getElementById("chord-delete-modal");
+  let text = document.getElementById("chord-delete-modal-text");
   if (!backdrop || !dialog || !text) {
     return;
   }
@@ -668,8 +668,8 @@ function chordDeleteModalOpen(name, storageIndex) {
 
 function chordDeleteModalClose() {
   chordDeletePendingIndex = null;
-  var backdrop = document.getElementById("chord-delete-modal-backdrop");
-  var dialog = document.getElementById("chord-delete-modal");
+  let backdrop = document.getElementById("chord-delete-modal-backdrop");
+  let dialog = document.getElementById("chord-delete-modal");
   if (!backdrop || !dialog) {
     return;
   }
@@ -689,28 +689,28 @@ function chordDeleteModalConfirm() {
 }
 
 function buildChordCards() {
-  var root = document.getElementById("chord-list");
+  let root = document.getElementById("chord-list");
   if (!root) {
     return;
   }
   root.innerHTML = "";
-  var searchEl = document.getElementById("chord-search");
-  var q = chordSearchNormalize(searchEl ? searchEl.value : "");
-  var decorated = chordListPrepareDecorated();
-  var filtered = chordListFilterDecorated(decorated, q);
-  for (var i = 0; i < filtered.length; i++) {
-    var entry = filtered[i];
-    var c = entry.chord;
-    var storageIndex = entry.storageIndex;
+  let searchEl = document.getElementById("chord-search");
+  let q = chordSearchNormalize(searchEl ? searchEl.value : "");
+  let decorated = chordListPrepareDecorated();
+  let filtered = chordListFilterDecorated(decorated, q);
+  for (let i = 0; i < filtered.length; i++) {
+    let entry = filtered[i];
+    let c = entry.chord;
+    let storageIndex = entry.storageIndex;
 
-    var article = document.createElement("article");
+    let article = document.createElement("article");
     article.className = "chord-card";
     article.setAttribute("data-storage-index", String(storageIndex));
 
-    var toolbar = document.createElement("div");
+    let toolbar = document.createElement("div");
     toolbar.className = "chord-card__toolbar";
 
-    var btnEdit = document.createElement("button");
+    let btnEdit = document.createElement("button");
     btnEdit.type = "button";
     btnEdit.className = "chord-card__action chord-card__action--edit";
     btnEdit.setAttribute("aria-label", "Editar " + c.name);
@@ -722,7 +722,7 @@ function buildChordCards() {
       };
     })(storageIndex, c));
 
-    var btnDel = document.createElement("button");
+    let btnDel = document.createElement("button");
     btnDel.type = "button";
     btnDel.className = "chord-card__action chord-card__action--delete";
     btnDel.setAttribute("aria-label", "Eliminar " + c.name);
@@ -738,7 +738,7 @@ function buildChordCards() {
     toolbar.appendChild(btnDel);
     article.appendChild(toolbar);
 
-    var diagramHost = document.createElement("div");
+    let diagramHost = document.createElement("div");
     diagramHost.className = "chord-card__diagram";
     renderChordDiagram(diagramHost, c);
 
@@ -750,7 +750,7 @@ function buildChordCards() {
 window.refreshChordList = buildChordCards;
 
 function chordSearchInit() {
-  var searchEl = document.getElementById("chord-search");
+  let searchEl = document.getElementById("chord-search");
   if (!searchEl) {
     return;
   }
@@ -758,10 +758,10 @@ function chordSearchInit() {
     buildChordCards();
   });
 
-  var delBackdrop = document.getElementById("chord-delete-modal-backdrop");
-  var delDialog = document.getElementById("chord-delete-modal");
-  var btnCancel = document.getElementById("chord-delete-cancel");
-  var btnConfirm = document.getElementById("chord-delete-confirm");
+  let delBackdrop = document.getElementById("chord-delete-modal-backdrop");
+  let delDialog = document.getElementById("chord-delete-modal");
+  let btnCancel = document.getElementById("chord-delete-cancel");
+  let btnConfirm = document.getElementById("chord-delete-confirm");
 
   if (btnCancel) {
     btnCancel.addEventListener("click", chordDeleteModalClose);
@@ -776,7 +776,7 @@ function chordSearchInit() {
     if (ev.key !== "Escape") {
       return;
     }
-    var dlg = document.getElementById("chord-delete-modal");
+    let dlg = document.getElementById("chord-delete-modal");
     if (dlg && dlg.classList.contains("is-open")) {
       chordDeleteModalClose();
     }

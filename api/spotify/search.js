@@ -1,12 +1,12 @@
-var https = require("https");
+let https = require("https");
 
-var spotifyToken = "";
-var spotifyTokenExpires = 0;
+let spotifyToken = "";
+let spotifyTokenExpires = 0;
 
 function httpsRequest(options, postBody) {
   return new Promise(function (resolve, reject) {
-    var req = https.request(options, function (res) {
-      var chunks = "";
+    let req = https.request(options, function (res) {
+      let chunks = "";
       res.on("data", function (d) {
         chunks += d;
       });
@@ -21,16 +21,16 @@ function httpsRequest(options, postBody) {
 }
 
 function getSpotifyToken() {
-  var id = process.env.SPOTIFY_CLIENT_ID;
-  var secret = process.env.SPOTIFY_CLIENT_SECRET;
+  let id = process.env.SPOTIFY_CLIENT_ID;
+  let secret = process.env.SPOTIFY_CLIENT_SECRET;
   if (!id || !secret) {
     return Promise.reject(new Error("Faltan credenciales de Spotify en Vercel"));
   }
   if (spotifyToken && Date.now() < spotifyTokenExpires - 60000) {
     return Promise.resolve(spotifyToken);
   }
-  var auth = Buffer.from(id + ":" + secret).toString("base64");
-  var body = "grant_type=client_credentials";
+  let auth = Buffer.from(id + ":" + secret).toString("base64");
+  let body = "grant_type=client_credentials";
   return httpsRequest(
     {
       hostname: "accounts.spotify.com",
@@ -44,7 +44,7 @@ function getSpotifyToken() {
     },
     body
   ).then(function (res) {
-    var data = JSON.parse(res.body);
+    let data = JSON.parse(res.body);
     if (!data.access_token) {
       throw new Error("No se pudo obtener token de Spotify");
     }
@@ -56,7 +56,7 @@ function getSpotifyToken() {
 
 function searchTracks(query) {
   return getSpotifyToken().then(function (token) {
-    var pathStr =
+    let pathStr =
       "/v1/search?type=track&limit=5&q=" + encodeURIComponent(query);
     return httpsRequest({
       hostname: "api.spotify.com",
@@ -65,16 +65,16 @@ function searchTracks(query) {
       headers: { Authorization: "Bearer " + token }
     });
   }).then(function (res) {
-    var data = JSON.parse(res.body);
-    var items = data.tracks && data.tracks.items ? data.tracks.items : [];
-    var results = [];
-    for (var i = 0; i < items.length; i++) {
-      var t = items[i];
-      var img = "";
+    let data = JSON.parse(res.body);
+    let items = data.tracks && data.tracks.items ? data.tracks.items : [];
+    let results = [];
+    for (let i = 0; i < items.length; i++) {
+      let t = items[i];
+      let img = "";
       if (t.album && t.album.images && t.album.images.length) {
         img = t.album.images[0].url;
       }
-      var artist = "";
+      let artist = "";
       if (t.artists && t.artists.length) artist = t.artists[0].name;
       results.push({
         id: t.id,
@@ -96,7 +96,7 @@ module.exports = function handler(req, res) {
     return;
   }
 
-  var q = "";
+  let q = "";
   if (req.query && req.query.q) {
     q = String(req.query.q).trim();
   }

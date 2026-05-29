@@ -1,16 +1,16 @@
 /* Service Worker — Chordy (precache + caché dinámica) */
 
-var PRECACHE_CACHE = "chordy-precache-9";
+let PRECACHE_CACHE = "chordy-precache-9";
 
-var BOOTSTRAP_CDN = [
+let BOOTSTRAP_CDN = [
   "https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css",
   "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css",
   "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/fonts/bootstrap-icons.woff2",
   "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/fonts/bootstrap-icons.woff",
 ];
-var RUNTIME_CACHE = "chordy-runtime-1";
+let RUNTIME_CACHE = "chordy-runtime-1";
 
-var PRECACHE_URLS = [
+let PRECACHE_URLS = [
   "./",
   "./index.html",
   "./songs.html",
@@ -39,7 +39,7 @@ function chordyIsHtmlNavigation(request) {
   if (request.mode === "navigate") {
     return true;
   }
-  var accept = request.headers.get("Accept");
+  let accept = request.headers.get("Accept");
   return accept && accept.indexOf("text/html") !== -1;
 }
 
@@ -47,7 +47,7 @@ function chordyPutRuntime(request, response) {
   if (!response || response.status !== 200) {
     return;
   }
-  var clone = response.clone();
+  let clone = response.clone();
   caches.open(RUNTIME_CACHE).then(function (cache) {
     cache.put(request, clone);
   });
@@ -67,7 +67,7 @@ self.addEventListener("install", function (event) {
 });
 
 self.addEventListener("activate", function (event) {
-  var allowed = [PRECACHE_CACHE, RUNTIME_CACHE];
+  let allowed = [PRECACHE_CACHE, RUNTIME_CACHE];
   event.waitUntil(
     caches.keys().then(function (names) {
       return Promise.all(
@@ -88,7 +88,7 @@ self.addEventListener("fetch", function (event) {
     return;
   }
 
-  var url;
+  let url;
   try {
     url = new URL(event.request.url);
   } catch (err) {
