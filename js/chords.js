@@ -442,6 +442,7 @@ function chordModalSave() {
     return;
   }
   let payload = { name: name, strings: chordModalStrings.slice() };
+  let wasEdit = chordModalEditIndex !== null;
   if (chordModalEditIndex !== null) {
     updateChordAt(chordModalEditIndex, payload);
   } else {
@@ -451,6 +452,13 @@ function chordModalSave() {
   window.refreshChordList();
   if (window.songModalRefreshPicker) {
     window.songModalRefreshPicker();
+  }
+  if (typeof chordyShowNotification === "function") {
+    if (wasEdit) {
+      chordyShowNotification("Chordy", "Acorde actualizado correctamente", "chordy-chord");
+    } else {
+      chordyShowNotification("Chordy", "Acorde guardado correctamente", "chordy-chord");
+    }
   }
 }
 
@@ -684,6 +692,9 @@ function chordDeleteModalConfirm() {
   if (chordDeletePendingIndex !== null) {
     deleteChordAt(chordDeletePendingIndex);
     buildChordCards();
+    if (typeof chordyShowNotification === "function") {
+      chordyShowNotification("Chordy", "Acorde eliminado", "chordy-chord");
+    }
   }
   chordDeleteModalClose();
 }

@@ -1045,6 +1045,7 @@ function songModalSave() {
   } else if (!chordyIsOnline()) {
     song.pendingSync = true;
   }
+  let wasEdit = songEditIndex !== null;
   if (songEditIndex !== null) {
     updateSongAt(songEditIndex, song);
   } else {
@@ -1052,6 +1053,13 @@ function songModalSave() {
   }
   songModalClose();
   buildSongLists();
+  if (typeof chordyShowNotification === "function") {
+    if (wasEdit) {
+      chordyShowNotification("Chordy", "Canción actualizada correctamente", "chordy-song");
+    } else {
+      chordyShowNotification("Chordy", "Canción guardada correctamente", "chordy-song");
+    }
+  }
 }
 
 function buildPickerDom() {
@@ -1291,6 +1299,9 @@ function songDeleteModalConfirm() {
   if (songDeletePendingIndex !== null) {
     deleteSongAt(songDeletePendingIndex);
     buildSongLists();
+    if (typeof chordyShowNotification === "function") {
+      chordyShowNotification("Chordy", "Canción eliminada", "chordy-song");
+    }
   }
   songDeleteModalClose();
   songModalClose();

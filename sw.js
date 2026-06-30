@@ -1,6 +1,6 @@
 /* Service Worker — Chordy (precache + caché dinámica) */
 
-let PRECACHE_CACHE = "chordy-precache-9";
+let PRECACHE_CACHE = "chordy-precache-14";
 
 let BOOTSTRAP_CDN = [
   "https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css",
@@ -21,6 +21,9 @@ let PRECACHE_URLS = [
   "./js/nav.js",
   "./js/fab.js",
   "./js/data/data.js",
+  "./js/notifications.js",
+  "./js/share.js",
+  "./js/import.js",
   "./js/chords.js",
   "./js/songs.js",
   "./js/pwa.js",
@@ -135,6 +138,32 @@ self.addEventListener("fetch", function (event) {
         .catch(function () {
           return Response.error();
         });
+    })
+  );
+});
+
+self.addEventListener("message", function (event) {
+  let data = event.data;
+  if (!data || data.type !== "SHOW_NOTIFICATION") return;
+  self.registration.showNotification(data.title || "Chordy", {
+    body: data.body || "",
+    tag: data.tag || "chordy",
+    icon: "./logo-192px.png",
+  });
+});
+
+self.addEventListener("notificationclick", function (event) {
+  event.notification.close();
+  event.waitUntil(
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then(function (list) {
+      for (let i = 0; i < list.length; i++) {
+        if ("focus" in list[i]) {
+          return list[i].focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow("./songs.html");
+      }
     })
   );
 });

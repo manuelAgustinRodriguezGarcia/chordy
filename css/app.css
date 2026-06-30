@@ -195,7 +195,8 @@ a {
 }
 
 .theme-toggle,
-.connection-status {
+.connection-status,
+.notifications-toggle {
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -227,9 +228,285 @@ a {
 }
 
 .theme-toggle .bi,
-.connection-status .bi {
+.connection-status .bi,
+.notifications-toggle .bi,
+.notifications-toggle__icon {
   font-size: 1.15rem;
   line-height: 1;
+}
+
+.notifications-toggle {
+  cursor: pointer;
+  border-color: var(--color-theme-toggle-border);
+  background: var(--color-theme-toggle-bg);
+  color: var(--color-accent-icon);
+}
+.notifications-toggle:hover {
+  background: var(--color-theme-toggle-hover);
+  border-color: var(--color-border-strong);
+}
+.notifications-toggle:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+.notifications-toggle:active {
+  transform: scale(0.96);
+}
+
+.notifications-toggle.is-active {
+  color: var(--color-accent-icon);
+  border-color: var(--color-border-strong);
+  background: var(--color-theme-toggle-hover);
+}
+
+.library-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  align-items: center;
+}
+
+.library-tools__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--color-text);
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 0.65rem;
+  cursor: pointer;
+}
+.library-tools__btn .bi {
+  font-size: 0.95rem;
+  line-height: 1;
+  color: var(--color-accent-label);
+}
+.library-tools__btn:hover {
+  background: var(--color-hover-violet);
+  border-color: var(--color-border-strong);
+}
+
+.library-tools__status {
+  width: 100%;
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-accent-label);
+}
+
+.library-tools__btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.library-import-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  background: var(--color-backdrop);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.library-import-backdrop.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.library-import-modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  z-index: 56;
+  width: min(92vw, 26rem);
+  max-height: min(88dvh, 36rem);
+  overflow: auto;
+  padding: 1.15rem;
+  border-radius: 1.1rem;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-elevated);
+  box-shadow: 0 18px 40px var(--color-shadow-strong);
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -48%);
+  transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
+}
+
+.library-import-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%);
+}
+
+body.library-import-open {
+  overflow: hidden;
+}
+
+.library-import__title {
+  margin: 0 0 0.35rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.library-import__desc {
+  margin: 0 0 0.75rem;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.library-import__textarea {
+  width: 100%;
+  min-height: 7rem;
+  padding: 0.65rem 0.75rem;
+  font-size: 0.78rem;
+  font-family: inherit;
+  color: var(--color-text);
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 0.65rem;
+  resize: vertical;
+}
+
+.library-import__hint {
+  margin: 0.5rem 0 0;
+  font-size: 0.75rem;
+  color: #ef4444;
+}
+
+.library-import__summary {
+  margin: 0.75rem 0 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-accent-label);
+}
+
+.library-import__warn {
+  margin: 0 0 0.5rem;
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.library-import__song-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 12rem;
+  overflow: auto;
+}
+
+.library-import__song-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.45rem 0.5rem;
+  border-radius: 0.55rem;
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-border);
+}
+
+.library-import__cover {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.45rem;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.library-import__cover--empty {
+  background: var(--color-ghost-bg);
+  border: 1px dashed var(--color-border);
+}
+
+.library-import__song-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.library-import__song-meta {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.library-import__chord-list {
+  margin-top: 0.65rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 0.55rem;
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-border);
+}
+
+.library-import__chord-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-accent-label);
+  margin-bottom: 0.2rem;
+}
+
+.library-import__chord-names {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.library-import__merge {
+  margin: 0.65rem 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.library-import__merge-note {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.library-import__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+}
+
+.library-import__btn {
+  padding: 0.45rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: inherit;
+  border-radius: 0.55rem;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.library-import__btn--ghost {
+  color: var(--color-text);
+  background: var(--color-ghost-surface);
+  border: 1px solid var(--color-border);
+}
+
+.library-import-modal .library-import__btn--primary {
+  color: #fafafa;
+  background-color: #7c3aed;
+  background-image: var(--gradient-primary);
+  border: none;
+  box-shadow: 0 2px 8px rgba(109, 40, 217, 0.3);
+}
+.library-import-modal .library-import__btn--primary:hover {
+  filter: brightness(1.06);
+}
+.library-import-modal .library-import__btn--primary:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
 }
 
 .app-header__actions .connection-status {

@@ -35,13 +35,26 @@
     refreshThemeIcon(btn, theme);
   }
 
+  function getThemeToggleBtn() {
+    return (
+      document.getElementById("theme-toggle-btn") ||
+      document.querySelector('button.theme-toggle[aria-label="Cambiar tema"]')
+    );
+  }
+
+  function syncThemeToggle() {
+    let theme = getStoredTheme();
+    applyTheme(theme);
+    updateToggleButton(getThemeToggleBtn(), theme);
+  }
+
   function setTheme(theme) {
     if (theme !== "light" && theme !== "dark") return;
     try {
       localStorage.setItem(STORAGE_KEY, theme);
     } catch (err) {}
     applyTheme(theme);
-    updateToggleButton(document.querySelector(".theme-toggle"), theme);
+    updateToggleButton(getThemeToggleBtn(), theme);
   }
 
   function toggleTheme() {
@@ -53,12 +66,16 @@
   }
 
   function initThemeToggle() {
-    let btn = document.querySelector(".theme-toggle");
-    let theme = getStoredTheme();
-    applyTheme(theme);
-    updateToggleButton(btn, theme);
-    if (!btn) return;
-    btn.addEventListener("click", toggleTheme);
+    syncThemeToggle();
+    let headerActions = document.querySelector(".app-header__actions");
+    if (!headerActions || headerActions._chordyThemeBound) return;
+    headerActions._chordyThemeBound = true;
+    headerActions.addEventListener("click", function (event) {
+      if (!event.target.closest("#theme-toggle-btn, button.theme-toggle[aria-label='Cambiar tema']")) {
+        return;
+      }
+      toggleTheme();
+    });
   }
 
   function updateConnectionStatus() {
@@ -93,11 +110,14 @@
   }
 
   function init() {
-    applyTheme(getStoredTheme());
     initNav();
     initThemeToggle();
     initConnectionStatus();
   }
+
+  window.addEventListener("pageshow", function () {
+    syncThemeToggle();
+  });
 
   chordyOnReady(init);
 })();

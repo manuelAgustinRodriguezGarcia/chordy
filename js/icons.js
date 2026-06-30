@@ -10,6 +10,9 @@ let CHORDY_BI_ICONS = {
   wifi: "bi-wifi",
   "wifi-off": "bi-wifi-off",
   "arrow-repeat": "bi-arrow-repeat",
+  share: "bi-share",
+  bell: "bi-bell",
+  "bell-fill": "bi-bell-fill",
 };
 
 function chordyIcon(name, className) {

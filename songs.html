@@ -52,7 +52,10 @@
         >
           <i class="bi bi-wifi theme-toggle__icon" aria-hidden="true"></i>
         </span>
-        <button type="button" class="theme-toggle" aria-label="Cambiar tema" aria-pressed="false">
+        <button type="button" id="notifications-toggle-btn" class="notifications-toggle" aria-label="Notificaciones" aria-pressed="false">
+          <i class="bi bi-bell notifications-toggle__icon" aria-hidden="true"></i>
+        </button>
+        <button type="button" id="theme-toggle-btn" class="theme-toggle" aria-label="Cambiar tema" aria-pressed="false">
           <i class="bi bi-sun theme-toggle__icon" aria-hidden="true"></i>
         </button>
         <button type="button" id="pwa-install-btn" class="pwa-install-btn" hidden>Instalar</button>
@@ -61,6 +64,17 @@
 
     <main class="app-main" id="main">
       <h1 class="sr-only">Canciones</h1>
+      <div class="library-tools">
+        <button type="button" id="library-share-btn" class="library-tools__btn">
+          <i class="bi bi-share" aria-hidden="true"></i>
+          Compartir biblioteca
+        </button>
+        <button type="button" id="library-import-btn" class="library-tools__btn">
+          <i class="bi bi-download" aria-hidden="true"></i>
+          Importar lista
+        </button>
+        <p id="library-tools-status" class="library-tools__status" hidden></p>
+      </div>
       <div class="sort-control">
         <div class="sort-dropdown" id="song-sort">
           <button
@@ -153,6 +167,9 @@
     <script src="js/nav.js"></script>
     <script src="js/fab.js"></script>
     <script src="js/data/data.js"></script>
+    <script src="js/notifications.js"></script>
+    <script src="js/share.js"></script>
+    <script src="js/import.js"></script>
     <script src="js/chords.js"></script>
     <script src="js/songs.js"></script>
     <script src="js/pwa.js"></script>

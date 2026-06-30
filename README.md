@@ -25,6 +25,11 @@ No importa si estás online o offline: tus datos quedan en el dispositivo y la a
 - Instalala en el celular o la compu como una app nativa (botón **Instalar** en el header, cuando el navegador lo permita).
 - Navegación entre **Canciones** y **Acordes** con barra inferior y acceso rápido con el botón **+**.
 - Tema claro/oscuro y indicador de conexión en el header.
+- Compartir biblioteca o canciones, sincronizar con el servidor local y notificaciones PWA.
+
+### Parcial 02 (AWP)
+
+Funcionalidades del segundo parcial: instalación, compartir, sync servidor, notificaciones locales vía Service Worker. Detalle en [`docs/parcial-02.md`](docs/parcial-02.md).
 
 ---
 
@@ -88,11 +93,16 @@ acordy/
 ├── sw.js               # Service Worker
 ├── js/
 │   ├── data/data.js    # IndexedDB y CRUD
-│   ├── songs.js        # Canciones, modales, Spotify
+│   ├── share.js        # Compartir biblioteca (export JSON)
+│   ├── import.js       # Importar lista
+│   ├── notifications.js # Notificaciones PWA locales
+│   ├── songs.js        # Canciones, modales, sync Spotify
 │   ├── chords.js       # Acordes, diagramas, editor
 │   └── pwa.js          # Registro SW e instalación
+├── docs/
+│   └── parcial-02.md   # Documentación parcial 02
 ├── scss/main.scss      # Estilos fuente
-└── server.js           # Servidor estático + proxy Spotify
+└── server.js           # Servidor estático + API Spotify
 ```
 
 ---
