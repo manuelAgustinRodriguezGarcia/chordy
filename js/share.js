@@ -25,17 +25,6 @@ function chordyShareCopyText(text, doneMessage) {
   return Promise.resolve();
 }
 
-function chordyShareDeliver(text, title) {
-  if (navigator.share) {
-    return navigator
-      .share({ title: title || "Chordy", text: text })
-      .catch(function () {
-        return chordyShareCopyText(text, "Biblioteca copiada para compartir");
-      });
-  }
-  return chordyShareCopyText(text, "Biblioteca copiada para compartir");
-}
-
 function chordyExportSong(song) {
   let lines = Array.isArray(song.lines) ? song.lines.slice() : [];
   let chords = [];
@@ -118,7 +107,7 @@ function chordyShareLibraryProceed() {
     return;
   }
   let text = chordyBuildLibraryShareText(songs, chords);
-  chordyShareDeliver(text, "Chordy - Biblioteca");
+  chordyShareCopyText(text, "Biblioteca copiada para compartir");
 }
 
 window.chordyShareLibrary = chordyShareLibrary;
