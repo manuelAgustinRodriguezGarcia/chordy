@@ -1,6 +1,6 @@
 /* Service Worker — Chordy (precache + caché dinámica) */
 
-let PRECACHE_CACHE = "chordy-precache-15";
+let PRECACHE_CACHE = "chordy-precache-16";
 
 let BOOTSTRAP_CDN = [
   "https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css",
@@ -149,7 +149,7 @@ self.addEventListener("message", function (event) {
   self.registration.showNotification(data.title || "Chordy", {
     body: data.body || "",
     tag: data.tag || "chordy",
-    icon: "./logo-192px.png",
+    icon: new URL("./logo-192px.png", self.location.href).href,
   });
 });
 
