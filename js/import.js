@@ -292,7 +292,7 @@ function chordyImportRenderPreview(parsed) {
   importPreviewEl.hidden = false;
 }
 
-function chordyImportApply(parsed, mergeChords) {
+function chordyImportApply(parsed) {
   let addedSongs = 0;
   let addedChords = 0;
 
@@ -307,26 +307,18 @@ function chordyImportApply(parsed, mergeChords) {
   }
 
   if (parsed.chords.length) {
-    if (mergeChords) {
-      let next = chordyImportMergeChords(loadChords(), parsed.chords);
-      addedChords = next.length - loadChords().length;
-      if (addedChords > 0) saveChords(next);
-    } else {
-      saveChords(parsed.chords);
-      addedChords = parsed.chords.length;
-    }
+    let before = loadChords().length;
+    let next = chordyImportMergeChords(loadChords(), parsed.chords);
+    addedChords = next.length - before;
+    if (addedChords > 0) saveChords(next);
   }
 
   if (typeof buildSongLists === "function") {
     buildSongLists();
   }
 
-  if (typeof chordyShowNotification === "function" && (addedSongs || addedChords)) {
-    chordyShowNotification(
-      "Chordy",
-      "Biblioteca importada: " + addedSongs + " canción(es), " + addedChords + " acorde(s)",
-      "chordy-import"
-    );
+  if ((addedSongs || addedChords) && typeof chordyShowToast === "function") {
+    chordyShowToast("Canciones y acordes importados correctamente");
   }
 }
 
@@ -364,17 +356,8 @@ function chordyImportUpdateButton() {
 }
 
 function chordyImportFinish(parsed) {
-  let mergeChords = false;
-  if (parsed.chords.length) {
-    mergeChords = window.confirm(
-      "¿Combinar la lista de acordes importada con los acordes que ya tenés?\n\nAceptar = combinar\nCancelar = reemplazar solo con los importados"
-    );
-  }
-  chordyImportApply(parsed, mergeChords);
+  chordyImportApply(parsed);
   chordyImportClose();
-  if (typeof chordyShareStatus === "function") {
-    chordyShareStatus("Biblioteca importada correctamente");
-  }
 }
 
 function chordyImportOnSubmit() {

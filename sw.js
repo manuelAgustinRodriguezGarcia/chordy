@@ -1,6 +1,6 @@
 /* Service Worker — Chordy (precache + caché dinámica) */
 
-let PRECACHE_CACHE = "chordy-precache-14";
+let PRECACHE_CACHE = "chordy-precache-15";
 
 let BOOTSTRAP_CDN = [
   "https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css",
@@ -18,6 +18,7 @@ let PRECACHE_URLS = [
   "./new-chord.html",
   "./css/app.css",
   "./js/icons.js",
+  "./js/toast.js",
   "./js/nav.js",
   "./js/fab.js",
   "./js/data/data.js",

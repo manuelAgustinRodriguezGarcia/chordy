@@ -177,6 +177,7 @@ function addArtist(name) {
 }
 
 let chordyStorageReady = initChordyStorage();
+window.chordyStorageReady = chordyStorageReady;
 
 function loadSongs() {
   return chordySongsCache.slice();
@@ -211,10 +212,6 @@ function deleteSongAt(index) {
   return true;
 }
 
-function defaultChords() {
-  return [{ name: "D", strings: ["none", "none", "air", 2, 3, 2] }];
-}
-
 function isValidChord(item) {
   if (!item || typeof item.name !== "string" || !item.name) {
     return false;
@@ -226,18 +223,11 @@ function isValidChord(item) {
 }
 
 function loadChords() {
-  let list = chordyChordsCache;
-  if (!list.length) {
-    return defaultChords();
-  }
   let out = [];
-  for (let i = 0; i < list.length; i++) {
-    if (isValidChord(list[i])) {
-      out.push(list[i]);
+  for (let i = 0; i < chordyChordsCache.length; i++) {
+    if (isValidChord(chordyChordsCache[i])) {
+      out.push(chordyChordsCache[i]);
     }
-  }
-  if (!out.length) {
-    return defaultChords();
   }
   return out.slice();
 }
@@ -275,9 +265,6 @@ function deleteChordAt(index) {
     return false;
   }
   list.splice(index, 1);
-  if (!list.length) {
-    list = defaultChords();
-  }
   saveChords(list);
   return true;
 }

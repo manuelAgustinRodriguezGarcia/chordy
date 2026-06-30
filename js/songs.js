@@ -225,6 +225,9 @@ function songOnBrowserOffline() {
 
 function songOnBrowserOnline() {
   songSyncUpdateButtons();
+  if (typeof chordyScheduleSyncReminder === "function") {
+    chordyScheduleSyncReminder();
+  }
 }
 
 function songCopyChords(chords) {
@@ -352,6 +355,9 @@ function songSyncApplyTrack(storageIndex, track) {
   updateSongAt(storageIndex, updated);
   songSyncClose();
   buildSongLists();
+  if (typeof chordyScheduleSyncReminder === "function") {
+    chordyScheduleSyncReminder();
+  }
 }
 
 function songSyncSkip(storageIndex) {
@@ -370,6 +376,9 @@ function songSyncSkip(storageIndex) {
   updateSongAt(storageIndex, updated);
   songSyncClose();
   buildSongLists();
+  if (typeof chordyScheduleSyncReminder === "function") {
+    chordyScheduleSyncReminder();
+  }
 }
 
 function songSyncRenderResults(storageIndex, results) {
@@ -1053,12 +1062,11 @@ function songModalSave() {
   }
   songModalClose();
   buildSongLists();
-  if (typeof chordyShowNotification === "function") {
-    if (wasEdit) {
-      chordyShowNotification("Chordy", "Canción actualizada correctamente", "chordy-song");
-    } else {
-      chordyShowNotification("Chordy", "Canción guardada correctamente", "chordy-song");
-    }
+  if (!wasEdit && typeof chordyShowToast === "function") {
+    chordyShowToast("Canción guardada correctamente");
+  }
+  if (typeof chordyScheduleSyncReminder === "function") {
+    chordyScheduleSyncReminder();
   }
 }
 
@@ -1299,8 +1307,8 @@ function songDeleteModalConfirm() {
   if (songDeletePendingIndex !== null) {
     deleteSongAt(songDeletePendingIndex);
     buildSongLists();
-    if (typeof chordyShowNotification === "function") {
-      chordyShowNotification("Chordy", "Canción eliminada", "chordy-song");
+    if (typeof chordyShowToast === "function") {
+      chordyShowToast("Canción eliminada");
     }
   }
   songDeleteModalClose();
@@ -1691,6 +1699,9 @@ function onSongCardClick(e) {
 function initSongsPage() {
   initSongSort();
   buildSongLists();
+  if (typeof chordyScheduleSyncReminder === "function") {
+    chordyScheduleSyncReminder();
+  }
 }
 
 function startSongsPage() {

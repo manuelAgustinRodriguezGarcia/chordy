@@ -1,4 +1,4 @@
-﻿let CHORD_DIAGRAM_MAX_START_FRET = 19;
+let CHORD_DIAGRAM_MAX_START_FRET = 19;
 let CHORD_DIAGRAM_MAX_ABSOLUTE_FRET = CHORD_DIAGRAM_MAX_START_FRET + 4;
 
 function normalizeStringValue(value) {
@@ -453,12 +453,8 @@ function chordModalSave() {
   if (window.songModalRefreshPicker) {
     window.songModalRefreshPicker();
   }
-  if (typeof chordyShowNotification === "function") {
-    if (wasEdit) {
-      chordyShowNotification("Chordy", "Acorde actualizado correctamente", "chordy-chord");
-    } else {
-      chordyShowNotification("Chordy", "Acorde guardado correctamente", "chordy-chord");
-    }
+  if (!wasEdit && typeof chordyShowToast === "function") {
+    chordyShowToast("Acorde guardado correctamente");
   }
 }
 
@@ -692,8 +688,8 @@ function chordDeleteModalConfirm() {
   if (chordDeletePendingIndex !== null) {
     deleteChordAt(chordDeletePendingIndex);
     buildChordCards();
-    if (typeof chordyShowNotification === "function") {
-      chordyShowNotification("Chordy", "Acorde eliminado", "chordy-chord");
+    if (typeof chordyShowToast === "function") {
+      chordyShowToast("Acorde eliminado");
     }
   }
   chordDeleteModalClose();

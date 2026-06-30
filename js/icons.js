@@ -13,6 +13,7 @@ let CHORDY_BI_ICONS = {
   share: "bi-share",
   bell: "bi-bell",
   "bell-fill": "bi-bell-fill",
+  check: "bi-check-lg",
 };
 
 function chordyIcon(name, className) {
